@@ -1,0 +1,12 @@
+{
+  "name": "wechat-crud",
+  "version": "1.0.0",
+  "description": "> 基于 `RESTful API` 标准微信小程序增删改查",
+  "main": "http.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "xgbnl",
+  "license": "ISC"
+}
