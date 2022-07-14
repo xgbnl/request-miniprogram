@@ -1,7 +1,7 @@
-### Wechat-Http
+### wechat-crud
 > 按照标准 `RESTful API` 封装的基于微信小程序请求类
 
-### 使用前准备
+### 配置
 编辑`app.js`,新增 `blobalData.host`
 ```javascript
 App({
@@ -16,6 +16,10 @@ App({
 ```
 
 ## 简单使用
+```shell
+npm i wechat-crud
+```
+
 ```javascript
 import http from "../../../wechat-http/http";
 ```
