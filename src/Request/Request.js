@@ -1,6 +1,6 @@
-import {BaseHttp} from "./abstract/BaseHttp";
+import {Abstract} from "./Abstract/Abstract.js";
 
-class Http extends BaseHttp {
+export class Request extends Abstract {
 
     constructor() {
         super();
@@ -110,8 +110,3 @@ class Http extends BaseHttp {
         return this.#upload(url, {method: 'POST', filePath: path, filename: filename})
     }
 }
-
-const http = new Http();
-
-module.exports = http;
-

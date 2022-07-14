@@ -1,4 +1,4 @@
-export class BaseHttp {
+export class Abstract {
     #host;
     #headers;
 
