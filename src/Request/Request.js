@@ -44,7 +44,7 @@ export class Request extends Abstract {
                 wx.uploadFile({
                     ...this.requestOptions(url, options, true),
                     success(res) {
-                        const response = JSON.stringify(res.data);
+                        const response = JSON.parse(res.data);
                         if (response.code === 200) {
                             resolve(response);
                         }
