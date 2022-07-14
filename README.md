@@ -37,7 +37,7 @@ import http from "../../../wechat-http/http";
 
 请使用以下方式存储你的 `token`
 
-```http request
+```javascript
 wx.setStorageSync('access_token','60JEwsLVlmKaurICnkmuZ')
 ```
 
