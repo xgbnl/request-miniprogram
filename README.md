@@ -123,3 +123,6 @@ http.upload('users/upload', file.url, 'filename').then((response) => {
 
 })
 ```
+
+### 开源协议
+MIT

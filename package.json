@@ -1,12 +1,16 @@
 {
-  "name": "wechat-crud",
+  "name": "miniprogram-crud",
   "version": "0.1.0",
   "description": "> 基于 `RESTful API` 标准微信小程序增删改查",
   "main": "index.js",
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
-  },
+  "miniprogram": "dist",
+  "devDependencies": {},
+  "dependencies": {},
   "keywords": [],
   "author": "xgbnl",
-  "license": "ISC"
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/xgbnl/wechat-crud.git"
+  }
 }
