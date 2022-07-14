@@ -12,5 +12,8 @@
   "repository": {
     "type": "git",
     "url": "https://github.com/xgbnl/wechat-crud.git"
+  },
+  "bugs": {
+    "url": "https://github.com/xgbnl/wechat-crud/issues"
   }
 }
