@@ -1,4 +1,6 @@
 import {Abstract} from "./Abstract/Abstract.js";
+import {Helper} from "../Helper/Helper";
+import {ResponseEnum} from "../Enum/ResponseEnum";
 
 export class Request extends Abstract {
 
@@ -6,19 +8,13 @@ export class Request extends Abstract {
         super();
     }
 
-    /**
-     * @param url
-     * @param options
-     * @param upload
-     * @returns {Promise<unknown>}
-     */
     #request(url, options, upload = false) {
         return new Promise((resolve, reject) => {
             try {
                 wx.request({
-                    ...this.requestOptions(url, options, upload),
+                    ...this.configure(url, options, upload),
                     success(response) {
-                        if (response.data.code === 200) {
+                        if (response.data.code === ResponseEnum.OK) {
                             resolve(response.data)
                         }
                     },
@@ -33,19 +29,14 @@ export class Request extends Abstract {
         })
     }
 
-    /**
-     * @param url
-     * @param options
-     * @returns {Promise<unknown>}
-     */
     #upload(url, options) {
         return new Promise((resolve, reject) => {
             try {
                 wx.uploadFile({
-                    ...this.requestOptions(url, options, true),
+                    ...this.configure(url, options, true),
                     success(res) {
-                        const response = JSON.parse(res.data);
-                        if (response.code === 200) {
+                        const response = Helper.parse(res.data);
+                        if (response.code === ResponseEnum.OK) {
                             resolve(response);
                         }
                     },

@@ -1,4 +1,4 @@
-import {Factory} from "./src/Factory/Factory.js";
+import {Factory} from "./Factory/Factory";
 
 const http = Factory.getRequest();
 

@@ -1,11 +1,14 @@
+import {Helper} from "../../Helper/Helper";
+
 export class Abstract {
     #host;
+    #app;
     #headers;
     #configs;
 
     constructor() {
-        const app = getApp();
-        this.#host = app.globalData.host;
+        this.#app = getApp();
+        this.#host = this.#app.globalData.host;
 
         this.#headers = {
             json: 'application/json; charset=UTF-8',
@@ -13,18 +16,18 @@ export class Abstract {
         };
     }
 
-    requestOptions(url, options, upload = false) {
+    configure(url, options, upload = false) {
 
         this.#configs = {
-            url: `${this.#host}${this.#prefix(url)}`,
+            url: `${this.#host}${Helper.prefix(url)}`,
             method: options.method,
-            data: options.method === 'GET' ? options.data : JSON.stringify(options.data),
+            data: options.method === 'GET' ? options.data : Helper.stringify(options.data),
             header: {
                 'Content-Type': upload ? this.#headers.form : this.#headers.json,
             },
         };
 
-        this.#BearerAuthorization();
+        this.#bearerAuthorization();
 
         // 解决微信不支持PATCH请求
         if (options.method === 'PATCH') {
@@ -38,7 +41,7 @@ export class Abstract {
         return this.#configs;
     }
 
-    #BearerAuthorization() {
+    #bearerAuthorization() {
         const token = wx.getStorageSync('access_token');
 
         if (token) {
@@ -55,9 +58,5 @@ export class Abstract {
     #setRequestPatch() {
         this.#configs.method = 'POST';
         this.#configs.header['X-HTTP-Method-Override'] = 'PATCH';
-    }
-
-    #prefix(needle) {
-        return needle.startsWith('/') ? needle : `/${needle}`;
     }
 }

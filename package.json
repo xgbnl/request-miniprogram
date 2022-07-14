@@ -1,9 +1,9 @@
 {
-  "name": "miniprogram-crud",
-  "version": "0.1.0",
+  "name": "wechat-crud",
+  "version": "0.0.1",
   "description": "> 基于 `RESTful API` 标准微信小程序增删改查",
-  "main": "index.js",
-  "miniprogram": "dist",
+  "main": "src/index.js",
+  "miniprogram": "src",
   "devDependencies": {},
   "dependencies": {},
   "keywords": [],
