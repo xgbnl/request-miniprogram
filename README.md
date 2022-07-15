@@ -28,7 +28,7 @@ npm i wechat-crud
 然后选择微信开发者工具的菜单栏 `"工具"` --- `"构建npm"` 再引用就可以使用
 
 ```javascript
-import http from "wechat-crud/index";
+import http from "wechat-crud";
 ```
 
 ### 关于`api`前辍 `/`
