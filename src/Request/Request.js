@@ -12,12 +12,15 @@ export class Request extends BaseRequest {
     }
 
     #request(url, options, upload = false) {
+
+        const that = this;
+
         return new Promise((resolve, reject) => {
             try {
                 wx.request({
-                    ...this.configure(url, options, upload),
+                    ...that.configure(url, options, upload),
                     success(response) {
-                        this.#triggerInterceptor(response,resolve);
+                        that.#triggerInterceptor(response, resolve);
                     },
                     fail(error) {
                         reject(error)
@@ -31,14 +34,15 @@ export class Request extends BaseRequest {
     }
 
     #upload(url, options) {
+
+        const that = this;
+
         return new Promise((resolve, reject) => {
             try {
                 wx.uploadFile({
-                    ...this.configure(url, options, true),
-                    success(res) {
-                        const response = JSON.parse(res.data);
-
-                        this.#triggerInterceptor(response,resolve);
+                    ...that.configure(url, options, true),
+                    success(response) {
+                        that.#triggerInterceptor(response, resolve)
                     },
                     fail(error) {
                         reject(error)
@@ -50,13 +54,20 @@ export class Request extends BaseRequest {
         })
     }
 
-    #triggerInterceptor(response,resolve) {
-        const {code, msg} = response;
-        if (code === ResponseEnum.OK) {
-            resolve(response);
+    #triggerInterceptor(response, resolve) {
+
+        let jsonData = response.data;
+
+        if (typeof jsonData === "string") {
+            jsonData = JSON.parse(jsonData);
         }
 
-        if (ResponseEnum.status.includes(code)) {
+        const {code, msg} = jsonData;
+        if (ResponseEnum.success(code)) {
+            resolve(jsonData);
+        }
+
+        if (ResponseEnum.ERRORS.includes(code)) {
             this.#responseInterceptor.interceptor({code: code, msg: msg});
             return false;
         }
