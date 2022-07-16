@@ -12,11 +12,15 @@ export class ResponseEnum {
 
     static ERROR = 500;
 
-    static status = [
+    static ERRORS = [
         ResponseEnum.UNAUTHORIZED,
         ResponseEnum.FORBIDDEN,
         ResponseEnum.NOT_FOUND,
         ResponseEnum.VALIDATE,
         ResponseEnum.ERROR
     ];
+
+    static success(code) {
+        return code === ResponseEnum.OK;
+    }
 }
