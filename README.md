@@ -31,25 +31,35 @@ npm i wechat-crud
 import http from "wechat-crud";
 ```
 
-### 关于`api`前辍 `/`
+### 拦截器
 
-可加可不加，(`/users`) 请求器内部会自动处理
+内置前后拦截器,拦截器触发规则:
 
-### 关于`toeken`和请求头
+- 请求前会检查域名配置，如果未配置域名会触发前置拦截器，提示形式为: `wx.showToast`
 
-请使用以下方式存储你的 `token`
+- 当响应码返回`[401,403,404,422,500]`情况时，后拦截器会被触发，展示形式依然为: `wx.showToast`
+
+### 请求`api`前辍 `/`
+
+可以写成 `/users` 或 `users` ,请求器内部会进行处理
+
+### `toeken`和请求头
+
+请使用以下`方法`和`键`存储你的 
 
 ```javascript
-wx.setStorageSync('access_token','60JEwsLVlmKaurICnkmuZ')
+wx.setStorageSync('access_token', '60JEwsLVlmKaurICnkmuZ')
 ```
 
-请求头将使用以下报文进行请求
+请求头将携带`Authorization`发送 `token`
 
 ```
 Authorization: Bearer 60JEwsLVlmKaurICnkmuZ7xxxxxxx
 ```
 
-### 获取
+## 方法集
+
+### 获取数据或查询
 
 ```javascript
 http.get('users').then((response) => {
@@ -57,18 +67,15 @@ http.get('users').then((response) => {
     console.log(response);
     // {msg:null,data:{},code:200}
 })
-```
 
-### 查
-
-```javascript
+// 查询
 const data = {name: '张三', number: 123456789,};
 
 http.get('users', data).then((response) => {
     // TOODO
 })
-```
 
+```
 ### 增
 
 ```javascript
@@ -98,17 +105,14 @@ http.update('users', data).then((response) => {
 })
 ```
 
-### 删
+### 删除与批量删除
 
 ```javascript
 http.destroy('users', {id: 1}).then((response) => {
     //TOODO
 })
-```
 
-### 批量删除
-
-```javascript
+// 批量删除
 const ids = [1, 2, 3, 4, 5];
 
 http.destroy('users', ids).then((response) => {
@@ -116,7 +120,8 @@ http.destroy('users', ids).then((response) => {
 })
 ```
 
-### 上传图片
+
+### 上传文件
 
 ```javascript
 const file = e.detail.files[0];
@@ -127,4 +132,5 @@ http.upload('users/upload', file.url, 'filename').then((response) => {
 ```
 
 ### 开源协议
+
 MIT
