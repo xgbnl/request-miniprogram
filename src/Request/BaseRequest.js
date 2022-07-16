@@ -21,13 +21,15 @@ export class BaseRequest {
 
     configure(url, options, upload = false) {
 
-        if (!this.#requestInterceptor.interceptor(url)) {
+        const requestUrl = `${this.#host}${this._prefix(url)}`;
+
+        if (!this.#requestInterceptor.interceptor(requestUrl)) {
             Helper.trigger('域名不合法');
             return false;
         }
 
         this.#configs = {
-            url: `${this.#host}${this._prefix(url)}`,
+            url: requestUrl,
             method: options.method,
             data: options.method === 'GET' ? options.data : this._stringify(options.data),
             header: {
