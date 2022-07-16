@@ -1,27 +1,35 @@
-import {Helper} from "../../Helper/Helper";
+import {Helper} from "../Helper/Helper";
 
-export class Abstract {
+export class BaseRequest {
     #host;
     #app;
     #headers;
     #configs;
+    #requestInterceptor;
 
-    constructor() {
-        this.#app = getApp();
+    constructor(reqInter, app) {
+        this.#app = app;
         this.#host = this.#app.globalData.host;
 
         this.#headers = {
             json: 'application/json; charset=UTF-8',
             form: 'multipart/form-data',
         };
+
+        this.#requestInterceptor = reqInter;
     }
 
     configure(url, options, upload = false) {
 
+        if (!this.#requestInterceptor.interceptor(url)) {
+            Helper.trigger('域名不合法');
+            return false;
+        }
+
         this.#configs = {
-            url: `${this.#host}${Helper.prefix(url)}`,
+            url: `${this.#host}${this._prefix(url)}`,
             method: options.method,
-            data: options.method === 'GET' ? options.data : Helper.stringify(options.data),
+            data: options.method === 'GET' ? options.data : this._stringify(options.data),
             header: {
                 'Content-Type': upload ? this.#headers.form : this.#headers.json,
             },
@@ -58,5 +66,17 @@ export class Abstract {
     #setRequestPatch() {
         this.#configs.method = 'POST';
         this.#configs.header['X-HTTP-Method-Override'] = 'PATCH';
+    }
+
+    _prefix(haystack, prefix = '/') {
+        return haystack.startsWith(prefix) ? haystack : `${prefix}${haystack}`;
+    }
+
+    _parse(haystack) {
+        return JSON.parse(haystack);
+    }
+
+    _stringify(haystack) {
+        return JSON.stringify(haystack);
     }
 }

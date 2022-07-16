@@ -1,11 +1,14 @@
-import {Abstract} from "./Abstract/Abstract.js";
-import {Helper} from "../Helper/Helper";
+import {BaseRequest} from "./BaseRequest.js";
 import {ResponseEnum} from "../Enum/ResponseEnum";
 
-export class Request extends Abstract {
+export class Request extends BaseRequest {
 
-    constructor() {
-        super();
+    #responseInterceptor;
+
+    constructor(reqInter, resInter, app) {
+        super(reqInter, app);
+
+        this.#responseInterceptor = resInter;
     }
 
     #request(url, options, upload = false) {
@@ -14,9 +17,7 @@ export class Request extends Abstract {
                 wx.request({
                     ...this.configure(url, options, upload),
                     success(response) {
-                        if (response.data.code === ResponseEnum.OK) {
-                            resolve(response.data)
-                        }
+                        this.#triggerInterceptor(response,resolve);
                     },
                     fail(error) {
                         reject(error)
@@ -35,10 +36,9 @@ export class Request extends Abstract {
                 wx.uploadFile({
                     ...this.configure(url, options, true),
                     success(res) {
-                        const response = Helper.parse(res.data);
-                        if (response.code === ResponseEnum.OK) {
-                            resolve(response);
-                        }
+                        const response = JSON.parse(res.data);
+
+                        this.#triggerInterceptor(response,resolve);
                     },
                     fail(error) {
                         reject(error)
@@ -48,6 +48,18 @@ export class Request extends Abstract {
                 reject(e)
             }
         })
+    }
+
+    #triggerInterceptor(response,resolve) {
+        const {code, msg} = response;
+        if (code === ResponseEnum.OK) {
+            resolve(response);
+        }
+
+        if (ResponseEnum.status.includes(code)) {
+            this.#responseInterceptor.interceptor({code: code, msg: msg});
+            return false;
+        }
     }
 
     /**
