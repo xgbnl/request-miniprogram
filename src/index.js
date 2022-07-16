@@ -1,5 +1,5 @@
-import {Factory} from "./Factory/Factory";
+import {HttpFactory} from "./Factories/HttpFactory";
 
-const http = Factory.getRequest();
+const http = HttpFactory.getRequest();
 
 export default http;

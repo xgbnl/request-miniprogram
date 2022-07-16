@@ -1,14 +1,12 @@
 export class Helper {
 
-    static prefix(haystack, prefix = '/') {
-        return haystack.startsWith(prefix) ? haystack : `${prefix}${haystack}`;
+    static trigger(msg) {
+        wx.showToast({
+            title: '成功',
+            icon: 'error',
+            duration: 2000,
+            mask: false
+        })
     }
 
-    static parse(haystack) {
-        return JSON.parse(haystack);
-    }
-
-    static stringify(haystack) {
-        return JSON.stringify(haystack);
-    }
 }

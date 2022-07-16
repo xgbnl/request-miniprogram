@@ -1,5 +1,6 @@
 import {Interceptor} from "./Interceptor";
 import {ResponseEnum} from "../Enum/ResponseEnum";
+import {Helper} from "../Helper/Helper";
 
 export class ResponseInterceptor extends Interceptor {
 
@@ -9,16 +10,16 @@ export class ResponseInterceptor extends Interceptor {
 
         switch (code) {
             case ResponseEnum.UNAUTHORIZED:
-                this._trigger('无效访问令牌');
+                Helper.trigger('无效访问令牌' || msg);
                 break;
             case ResponseEnum.FORBIDDEN:
-                this._trigger('访问被禁止');
+                Helper.trigger('访问被禁止' || msg);
                 break;
             case ResponseEnum.NOT_FOUND:
-                this._trigger('页面不存在');
+                Helper.trigger('页面不存在' || msg);
                 break;
             case ResponseEnum.VALIDATE:
-                this._trigger(msg);
+                Helper.trigger(msg);
                 break;
         }
     }
