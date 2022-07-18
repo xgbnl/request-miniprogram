@@ -24,7 +24,7 @@ export class BaseRequest {
         const requestUrl = `${this.#host}${this._prefix(url)}`;
 
         if (!this.#requestInterceptor.interceptor(requestUrl)) {
-            Helper.trigger('域名不合法');
+            this.abort('域名不合法');
             return false;
         }
 
@@ -74,11 +74,11 @@ export class BaseRequest {
         return haystack.startsWith(prefix) ? haystack : `${prefix}${haystack}`;
     }
 
-    _parse(haystack) {
-        return JSON.parse(haystack);
-    }
-
     _stringify(haystack) {
         return JSON.stringify(haystack);
+    }
+
+    abort(msg, icon = 'none', duration = 2000) {
+        Helper.abort(msg, icon, duration)
     }
 }

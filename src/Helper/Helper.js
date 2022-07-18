@@ -1,10 +1,10 @@
 export class Helper {
 
-    static trigger(msg) {
+    static abort(msg, icon = 'none', duration = 2000) {
         wx.showToast({
             title: msg,
-            icon: 'error',
-            duration: 2000,
+            icon: icon,
+            duration: duration,
             mask: false
         })
     }

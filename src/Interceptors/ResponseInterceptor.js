@@ -10,16 +10,16 @@ export class ResponseInterceptor extends Interceptor {
 
         switch (code) {
             case ResponseEnum.UNAUTHORIZED:
-                Helper.trigger('无效访问令牌' || msg);
+                Helper.abort(msg ?? '无效访问令牌');
                 break;
             case ResponseEnum.FORBIDDEN:
-                Helper.trigger('访问被禁止' || msg);
+                Helper.abort(msg ?? '访问被禁止');
                 break;
             case ResponseEnum.NOT_FOUND:
-                Helper.trigger('页面不存在' || msg);
+                Helper.abort(msg ?? '页面不存在');
                 break;
             case ResponseEnum.VALIDATE:
-                Helper.trigger(msg);
+                Helper.abort(msg);
                 break;
         }
     }
