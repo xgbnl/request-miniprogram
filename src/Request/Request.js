@@ -84,6 +84,16 @@ export class Request extends BaseRequest {
     }
 
     /**
+     * 获取详情
+     * @param {*} url 
+     * @param {*} id 
+     * @returns 
+     */
+    show(url,id){
+        return this.#request(url, {method: 'POST', data: {id: id}})
+    }
+
+    /**
      * 创建数据
      * @param url
      * @param options
