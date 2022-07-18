@@ -72,10 +72,21 @@ http.get('users').then((response) => {
 const data = {name: '张三', number: 123456789,};
 
 http.get('users', data).then((response) => {
-    // TOODO
+    //TODO
 })
 
 ```
+
+### 详情
+
+```javascript
+http.show('users',1).then((response) => {
+    //TODO
+})
+
+```
+
+
 ### 增
 
 ```javascript
@@ -86,7 +97,7 @@ const data = {
 };
 
 http.store('users', data).then((response) => {
-    // TOODO
+    //TODO
 })
 ```
 
@@ -101,7 +112,7 @@ const data = {
 };
 
 http.update('users', data).then((response) => {
-    // TOODO
+    //TODO
 })
 ```
 
@@ -109,14 +120,14 @@ http.update('users', data).then((response) => {
 
 ```javascript
 http.destroy('users', {id: 1}).then((response) => {
-    //TOODO
+    //TODO
 })
 
 // 批量删除
 const ids = [1, 2, 3, 4, 5];
 
 http.destroy('users', ids).then((response) => {
-    //TOODO
+    //TODO
 })
 ```
 
