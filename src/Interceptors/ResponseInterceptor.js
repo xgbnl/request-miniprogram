@@ -21,6 +21,9 @@ export class ResponseInterceptor extends Interceptor {
             case ResponseEnum.VALIDATE:
                 Helper.abort(msg);
                 break;
+            case ResponseEnum.ERROR:
+                Helper.abort(msg);
+                break;
         }
     }
 }
