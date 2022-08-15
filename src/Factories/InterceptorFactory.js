@@ -7,8 +7,7 @@ export class InterceptorFactory {
         return new RequestInterceptor();
     }
 
-  static  getResponseInterceptor() {
-        return new ResponseInterceptor();
+  static  getResponseInterceptor(app) {
+        return new ResponseInterceptor(app);
     }
-
 }
