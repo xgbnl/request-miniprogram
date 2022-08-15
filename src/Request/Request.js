@@ -68,7 +68,7 @@ export class Request extends BaseRequest {
         }
 
         if (ResponseEnum.ERRORS.includes(code)) {
-            this.#responseInterceptor.interceptor({code: code, msg: msg});
+            this.#responseInterceptor.interceptor({code,msg});
             return false;
         }
     }
@@ -80,7 +80,7 @@ export class Request extends BaseRequest {
      * @returns {Promise<*>}
      */
     get(url, options = {}) {
-        return this.#request(url, {method: 'GET', data: options})
+        return this.#request(url, {method: 'GET', data: options});
     }
 
     /**
@@ -90,7 +90,7 @@ export class Request extends BaseRequest {
      * @returns 
      */
     show(url,id){
-        return this.#request(url, {method: 'POST', data: {id: id}})
+        return this.#request(url, {method: 'POST', data: {id: id}});
     }
 
     /**
@@ -100,7 +100,7 @@ export class Request extends BaseRequest {
      * @returns {Promise<*>}
      */
     store(url, options) {
-        return this.#request(url, {method: 'POST', data: options})
+        return this.#request(url, {method: 'POST', data: options});
     }
 
     /**
@@ -110,7 +110,7 @@ export class Request extends BaseRequest {
      * @returns {Promise<*>}
      */
     update(url, options) {
-        return this.#request(url, {method: 'PATCH', data: options})
+        return this.#request(url, {method: 'PATCH', data: options});
     }
 
     /**
@@ -120,7 +120,7 @@ export class Request extends BaseRequest {
      * @returns {Promise<*>}
      */
     destroy(url, options) {
-        return this.#request(url, {method: 'DELETE', data: options})
+        return this.#request(url, {method: 'DELETE', data: options});
     }
 
     /**
@@ -131,6 +131,6 @@ export class Request extends BaseRequest {
      * @returns {Promise<*>}
      */
     upload(url, path, filename) {
-        return this.#upload(url, {method: 'POST', filePath: path, filename: filename})
+        return this.#upload(url, {method: 'POST', filePath: path, filename: filename});
     }
 }

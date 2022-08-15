@@ -1,7 +1,7 @@
 {
-  "name": "wechat-crud",
-  "version": "0.0.8",
-  "description": "> 基于 `RESTful API` 标准微信小程序增删改查",
+  "name": "wechat-custom-request",
+  "version": "0.0.4",
+  "description": "二次封装的微信请求器",
   "main": "src/index.js",
   "miniprogram": "src",
   "devDependencies": {},
@@ -11,9 +11,9 @@
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "https://github.com/xgbnl/wechat-crud.git"
+    "url": "https://github.com/xgbnl/wechat-custom-request.git"
   },
   "bugs": {
-    "url": "https://github.com/xgbnl/wechat-crud/issues"
+    "url": "https://github.com/xgbnl/wechat-custom-request/issues"
   }
 }

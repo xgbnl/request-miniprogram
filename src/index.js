@@ -1,5 +1,11 @@
 import {HttpFactory} from "./Factories/HttpFactory";
+import {AppConfig} from "./Config/AppConfig";
 
-const http = HttpFactory.getRequest();
+const request = HttpFactory.getRequest();
 
-export default http;
+const appConfig = AppConfig.getInstance();
+
+export default {
+    request,
+    appConfig,
+};

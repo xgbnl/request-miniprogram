@@ -1,7 +1,6 @@
 import {Helper} from "../Helper/Helper";
 
 export class BaseRequest {
-    #host;
     #app;
     #headers;
     #configs;
@@ -9,7 +8,6 @@ export class BaseRequest {
 
     constructor(reqInter, app) {
         this.#app = app;
-        this.#host = this.#app.globalData.host;
 
         this.#headers = {
             json: 'application/json; charset=UTF-8',
@@ -21,10 +19,10 @@ export class BaseRequest {
 
     configure(url, options, upload = false) {
 
-        const requestUrl = `${this.#host}${this._prefix(url)}`;
+        const requestUrl = `${this.#app.getApi()}${this._prefix(url)}`;
 
         if (!this.#requestInterceptor.interceptor(requestUrl)) {
-            this.abort('域名不合法');
+            this.abort('域名不合法,请配置合法域名,如: http://laravel.test/api');
             return false;
         }
 
@@ -52,10 +50,10 @@ export class BaseRequest {
     }
 
     #bearerAuthorization() {
-        const token = wx.getStorageSync('access_token');
+        const token = wx.getStorageSync(this.#app.getStorageKey());
 
         if (token) {
-            this.#configs.header['Authorization'] = `Bearer ${token}`;
+            this.#configs.header['Authorization'] = `${this.#app.getTokenType()} ${token}`;
         }
     }
 

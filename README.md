@@ -1,34 +1,42 @@
-### wechat-crud
+### wechat-custom-request
 
 > 基于 `RESTful API` 标准封装的基于微信小程序请求器
 
 ### 配置
 
-编辑`app.js`,新增 `blobalData.host`
+`app.js`
 
 ```javascript
+import { appConfig } from "wechat-custom-request"
+
 App({
     onLaunch: function () {
+        this.initAppConfig();
     },
-    onShow: function () {
-        updateManager();
+    
+    initAppConfig(){
+        appConfig.configure({
+            api: 'http://laravel.test/api', // 全局请求api
+            loginPage: '/pages/auth/login/index', // 登录页,后端返回401时会跳转至授权页
+            homePage: '/pages/home/index', // 首页,后端返回404时跳转至首页
+            tokenType: 'Bearer', // 可选，token类型
+            storageKey: 'access_token' // 可选，本地存储token键
+        });
     },
-    globalData: {
-        host: 'http://laravel.test'
-    }
+    
 });
 ```
 
 ## 简单使用
 
 ```shell
-npm i wechat-crud
+npm i wechat-custom-request
 ```
 
 然后选择微信开发者工具的菜单栏 `"工具"` --- `"构建npm"` 再引用就可以使用
 
 ```javascript
-import http from "wechat-crud";
+import {request} from "wechat-custom-request";
 ```
 
 ### 拦截器
@@ -62,7 +70,7 @@ Authorization: Bearer 60JEwsLVlmKaurICnkmuZ7xxxxxxx
 ### 获取数据或查询
 
 ```javascript
-http.get('users').then((response) => {
+request.get('users').then((response) => {
 
     console.log(response);
     // {msg:null,data:{},code:200}
@@ -71,7 +79,7 @@ http.get('users').then((response) => {
 // 查询
 const data = {name: '张三', number: 123456789,};
 
-http.get('users', data).then((response) => {
+request.get('users', data).then((response) => {
     //TODO
 })
 
@@ -80,7 +88,7 @@ http.get('users', data).then((response) => {
 ### 详情
 
 ```javascript
-http.show('users',1).then((response) => {
+request.show('users',1).then((response) => {
     //TODO
 })
 
@@ -96,7 +104,7 @@ const data = {
     sex: 1,
 };
 
-http.store('users', data).then((response) => {
+request.store('users', data).then((response) => {
     //TODO
 })
 ```
@@ -111,7 +119,7 @@ const data = {
     sex: 1,
 };
 
-http.update('users', data).then((response) => {
+request.update('users', data).then((response) => {
     //TODO
 })
 ```
@@ -119,14 +127,14 @@ http.update('users', data).then((response) => {
 ### 删除与批量删除
 
 ```javascript
-http.destroy('users', {id: 1}).then((response) => {
+request.destroy('users', {id: 1}).then((response) => {
     //TODO
 })
 
 // 批量删除
 const ids = [1, 2, 3, 4, 5];
 
-http.destroy('users', ids).then((response) => {
+request.destroy('users', ids).then((response) => {
     //TODO
 })
 ```
@@ -137,7 +145,7 @@ http.destroy('users', ids).then((response) => {
 ```javascript
 const file = e.detail.files[0];
 
-http.upload('users/upload', file.url, 'filename').then((response) => {
+request.upload('users/upload', file.url, 'filename').then((response) => {
 
 })
 ```
