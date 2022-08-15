@@ -9,16 +9,16 @@ export class AppConfig {
 
     /**
      * Init singleton setting.
-     * @param api request api
-     * @param loginPage user login page
-     * @param homePage miniProgram home page
-     * @param tokenType token type
-     * @param storageKey token storage key
+     * @param api
+     * @param authPage
+     * @param homePage
+     * @param tokenType
+     * @param storageKey
      */
-    configure({api, loginPage, homePage,tokenType,storageKey}) {
+    configure({api, authPage, homePage,tokenType,storageKey}) {
         this.#globalData = {
             api ,
-            loginPage,
+            authPage,
             homePage,
             tokenType: tokenType ?? 'Bearer',
             storageKey: storageKey ?? 'access_token'
@@ -38,7 +38,7 @@ export class AppConfig {
      * @returns {string}
      */
     getLoginPage() {
-        return this.#globalData.loginPage;
+        return this.#globalData.authPage;
     }
 
     /**
