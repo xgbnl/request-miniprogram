@@ -1,6 +1,6 @@
 {
   "name": "wechat-custom-request",
-  "version": "0.0.5",
+  "version": "0.0.6",
   "description": "二次封装的微信请求器",
   "main": "src/index.js",
   "miniprogram": "src",
