@@ -5,7 +5,7 @@ const request = HttpFactory.getRequest();
 
 const appConfig = AppConfig.getInstance();
 
-export default {
+export {
     request,
     appConfig,
 };
