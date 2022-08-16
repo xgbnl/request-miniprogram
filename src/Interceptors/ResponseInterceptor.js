@@ -16,7 +16,7 @@ export class ResponseInterceptor extends Interceptor {
         switch (code) {
             case ResponseEnum.UNAUTHORIZED:
                 Helper.abort(msg ?? '无效访问令牌');
-                this.#redirect(this.#app.getLoginPage())
+                this.#redirect(this.#app.getAuthPage())
                 break;
             case ResponseEnum.FORBIDDEN:
                 Helper.abort(msg ?? '访问被禁止');

@@ -2,32 +2,7 @@
 
 > 基于 `RESTful API` 标准封装的基于微信小程序请求器
 
-### 配置
-
-`app.js`
-
-```javascript
-import { appConfig } from "wechat-custom-request"
-
-App({
-    onLaunch: function () {
-        this.initAppConfig();
-    },
-    
-    initAppConfig(){
-        appConfig.configure({
-            api: 'http://laravel.test/api', // 全局请求api
-            loginPage: '/pages/auth/login/index', // 登录页,后端返回401时会跳转至授权页
-            homePage: '/pages/home/index', // 首页,后端返回404时跳转至首页
-            tokenType: 'Bearer', // 可选，token类型
-            storageKey: 'access_token' // 可选，本地存储token键
-        });
-    },
-    
-});
-```
-
-## 简单使用
+## 安装
 
 ```shell
 npm i wechat-custom-request
@@ -35,121 +10,185 @@ npm i wechat-custom-request
 
 然后选择微信开发者工具的菜单栏 `"工具"` --- `"构建npm"` 再引用就可以使用
 
+## 简单使用
+
+### AppConfig
+
+全局配置不再由小程序app实例提供，将由`AppConfig`这个单例类来为请求器提供所需配置，下面展示它有哪些实例方法：
+
+方法集
+
+```js
+import {appConfig} from "wechat-custom-request"
+
+// 该方法接收一个对象,用于该单例的配置初始化
+appConfig.configure({});
+
+// 获取token类型
+appConfig.getTokenType();
+
+// 获取存储在本地的token
+appConfig.getStorageToken();
+
+// 获取请求头名称
+appConfig.getHeader();
+
+// 获取存储在本地的令牌名称
+appConfig.getStorageKey();
+
+// 获取请求api地址
+appConfig.getApi();
+
+// 获取授权页面
+appConfig.getAuthPage();
+
+// 获取首页
+appConfig.getHomePage();
+```
+
+### 配置
+
+`app.js`
+
 ```javascript
-import {request} from "wechat-custom-request";
+import {appConfig} from "wechat-custom-request"
+
+App({
+    onLaunch: function () {
+        this.initAppConfig();
+    },
+
+    // 不再依赖app的globalData
+    initAppConfig() {
+
+        appConfig.configure({
+            api: 'http://laravel.test/api', // 全局请求api
+            authPage: '/pages/auth/index', // 后端返回401时会跳转至授权页
+            homePage: '/pages/home/index', // 后端返回404时跳转至首页
+            header: 'Authorization', // 请求头token标志
+            storageKey: 'access_token',// 选填,本地存储token键,默认为access_token
+            tokenType: 'Bearer', // 选填,token类型如果为Bearer,请求头为:Authorization时，请求头将由 Bearer + token 报文发式发出
+        });
+
+    },
+});
 ```
 
 ### 拦截器
 
-内置前后拦截器,拦截器触发规则:
+- 前置拦截器
 
-- 请求前会检查域名配置，如果未配置域名会触发前置拦截器，提示形式为: `wx.showToast`
+> 请求前会进行api域名检查，如果未配置或配置错误，将被触发
 
-- 当响应码返回`[401,403,404,422,500]`情况时，后拦截器会被触发，展示形式依然为: `wx.showToast`
+- 后置拦截器
 
-### 请求`api`前辍 `/`
+> 当后端返回 `401,403,404,422,500`状态码时，该拦截器将被触发
 
-可以写成 `/users` 或 `users` ,请求器内部会进行处理
+> 当状态码为`401`时,会跳转至授权页
 
-### `toeken`和请求头
+> 当状态码为`404`时,会跳转至首页
 
-请使用以下`方法`和`键`存储你的 
+### Request方法集
 
 ```javascript
-wx.setStorageSync('access_token', '60JEwsLVlmKaurICnkmuZ')
+import { request } from "wechat-custom-request";
 ```
 
-请求头将携带`Authorization`发送 `token`
+#### 获取资源
 
-```
-Authorization: Bearer 60JEwsLVlmKaurICnkmuZ7xxxxxxx
-```
+请求器会自动为您处理请求接口,可以根据你的个人习惯书写为: `/users`或`users`
 
-## 方法集
-
-### 获取数据或查询
+> 请求方式: `GET`
 
 ```javascript
 request.get('users').then((response) => {
-
-    console.log(response);
-    // {msg:null,data:{},code:200}
+    // DoSomething...
 })
 
 // 查询
-const data = {name: '张三', number: 123456789,};
+const user = {name: '张三', phone: 15689324465,};
 
-request.get('users', data).then((response) => {
-    //TODO
+request.get('users', user).then((response) => {
+    // DoSomething...
+})
+```
+
+#### 资源详情
+
+> 请求方式: `POST`
+
+```javascript
+
+const uid = 22;
+
+request.show('users', uid).then((response) => {
+    // DoSomething...
 })
 
 ```
 
-### 详情
+#### 创建资源
+
+> 请求方式: `POST`
 
 ```javascript
-request.show('users',1).then((response) => {
-    //TODO
-})
-
-```
-
-
-### 增
-
-```javascript
-const data = {
+const user = {
     name: 'jack',
     age: 20,
     sex: 1,
 };
 
-request.store('users', data).then((response) => {
-    //TODO
+request.store('users', user).then((response) => {
+    // DoSomething...
 })
 ```
 
-### 改
+#### 更新资源
 
 ```javascript
-const data = {
+const user = {
     id: 1,
     name: 'jack',
     age: 20,
     sex: 1,
 };
 
-request.update('users', data).then((response) => {
-    //TODO
+request.update('users', user).then((response) => {
+    // DoSomething...
 })
 ```
 
-### 删除与批量删除
+#### 删除资源
+
+> 请求方式: `DELETE`
 
 ```javascript
-request.destroy('users', {id: 1}).then((response) => {
-    //TODO
+const id = 20;
+
+request.destroy('users', {id}).then((response) => {
+    // DoSomething...
 })
 
 // 批量删除
 const ids = [1, 2, 3, 4, 5];
 
 request.destroy('users', ids).then((response) => {
-    //TODO
+    // DoSomething...
 })
 ```
 
+#### 上传资源
 
-### 上传文件
+> 请求方式: 伪`PATCH`
 
 ```javascript
 const file = e.detail.files[0];
 
 request.upload('users/upload', file.url, 'filename').then((response) => {
-
+    // Dosomething
 })
 ```
 
-### 开源协议
+#### 开源协议
 
 MIT

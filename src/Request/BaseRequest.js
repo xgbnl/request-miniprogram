@@ -1,4 +1,5 @@
 import {Helper} from "../Helper/Helper";
+import {RequestEnum} from "../Enum/RequestEnum";
 
 export class BaseRequest {
     #app;
@@ -22,23 +23,25 @@ export class BaseRequest {
         const requestUrl = `${this.#app.getApi()}${this._prefix(url)}`;
 
         if (!this.#requestInterceptor.interceptor(requestUrl)) {
-            this.abort('域名不合法,请配置合法域名,如: http://laravel.test/api');
+            this.abort('api域名不合法,请配置合法域名,如: http://laravel.test/api', 3000);
             return false;
         }
 
         this.#configs = {
             url: requestUrl,
             method: options.method,
-            data: options.method === 'GET' ? options.data : this._stringify(options.data),
+            data: options.method === RequestEnum.GET ? options.data : this._stringify(options.data),
             header: {
                 'Content-Type': upload ? this.#headers.form : this.#headers.json,
             },
         };
 
-        this.#bearerAuthorization();
+        if (this.#app.getStorageToken()) {
+            this.#bearerAuthorization();
+        }
 
         // 解决微信不支持PATCH请求
-        if (options.method === 'PATCH') {
+        if (options.method === RequestEnum.PATCH) {
             this.#setRequestPatch();
         }
 
@@ -50,10 +53,10 @@ export class BaseRequest {
     }
 
     #bearerAuthorization() {
-        const token = wx.getStorageSync(this.#app.getStorageKey());
-
-        if (token) {
-            this.#configs.header['Authorization'] = `${this.#app.getTokenType()} ${token}`;
+        if ((this.#app.getHeader() === 'Authorization') && (this.#app.getTokenType() === 'Bearer')) {
+            this.#configs.header[this.#app.getHeader()] = `${this.#app.getTokenType()} ${this.#app.getStorageToken()}`;
+        } else {
+            this.#configs.header[this.#app.getHeader()] = this.#app.getStorageToken();
         }
     }
 
@@ -64,8 +67,8 @@ export class BaseRequest {
     }
 
     #setRequestPatch() {
-        this.#configs.method = 'POST';
-        this.#configs.header['X-HTTP-Method-Override'] = 'PATCH';
+        this.#configs.method = RequestEnum.POST;
+        this.#configs.header['X-HTTP-Method-Override'] = RequestEnum.PATCH;
     }
 
     _prefix(haystack, prefix = '/') {
@@ -76,7 +79,7 @@ export class BaseRequest {
         return JSON.stringify(haystack);
     }
 
-    abort(msg, icon = 'none', duration = 2000) {
+    abort(msg, duration = 2000, icon = 'none',) {
         Helper.abort(msg, icon, duration)
     }
 }

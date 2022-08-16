@@ -12,15 +12,17 @@ export class AppConfig {
      * @param api
      * @param authPage
      * @param homePage
+     * @param header
      * @param tokenType
      * @param storageKey
      */
-    configure({api, authPage, homePage,tokenType,storageKey}) {
+    configure({api, authPage, homePage, header, tokenType, storageKey}) {
         this.#globalData = {
-            api ,
+            api,
             authPage,
             homePage,
-            tokenType: tokenType ?? 'Bearer',
+            header,
+            tokenType: tokenType ?? '',
             storageKey: storageKey ?? 'access_token'
         };
     }
@@ -37,7 +39,7 @@ export class AppConfig {
      * Get miniProgram login pages.
      * @returns {string}
      */
-    getLoginPage() {
+    getAuthPage() {
         return this.#globalData.authPage;
     }
 
@@ -58,6 +60,14 @@ export class AppConfig {
     }
 
     /**
+     * Get local storage token.
+     * @returns {*}
+     */
+    getStorageToken() {
+        return wx.getStorageSync(this.getStorageKey());
+    }
+
+    /**
      * Get token storage key.
      * @returns {string}
      */
@@ -66,10 +76,18 @@ export class AppConfig {
     }
 
     /**
+     * Get token header.
+     * @returns {{"Content-Type": *}|*}
+     */
+    getHeader() {
+        return this.#globalData.header;
+    }
+
+    /**
      * Check access token is empty.
      * @returns {boolean}
      */
-    tokenIsEmpty(){
+    tokenIsEmpty() {
         return !wx.getStorageSync(this.getStorageKey());
     }
 
