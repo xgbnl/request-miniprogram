@@ -94,7 +94,7 @@ App({
 ### Request方法集
 
 ```javascript
-import { request } from "wechat-custom-request";
+import {request} from "wechat-custom-request";
 ```
 
 #### 获取资源
@@ -109,9 +109,9 @@ request.get('users').then((response) => {
 })
 
 // 查询
-const user = {name: '张三', phone: 15689324465,};
+const query = {name: '张三', phone: 15689324465,};
 
-request.get('users', user).then((response) => {
+request.get('users', query).then((response) => {
     // DoSomething...
 })
 ```
@@ -148,6 +148,8 @@ request.store('users', user).then((response) => {
 
 #### 更新资源
 
+> 请求方式: `PATCH`
+
 ```javascript
 const user = {
     id: 1,
@@ -182,7 +184,7 @@ request.destroy('users', ids).then((response) => {
 
 #### 上传资源
 
-> 请求方式: 伪`PATCH`
+> 请求方式: `POST`
 
 ```javascript
 const file = e.detail.files[0];
