@@ -30,6 +30,9 @@ appConfig.getTokenType();
 // 获取存储在本地的token
 appConfig.getStorageToken();
 
+// 检查token是否为空
+appConfig.tokenIsEmpty();
+
 // 获取请求头名称
 appConfig.getHeader();
 
