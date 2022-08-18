@@ -80,6 +80,6 @@ export class BaseRequest {
     }
 
     abort(msg, duration = 2000, icon = 'none',) {
-        Helper.abort(msg, icon, duration)
+        Helper.abort(msg, duration, icon,)
     }
 }
