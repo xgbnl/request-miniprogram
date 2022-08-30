@@ -63,7 +63,8 @@ export class BaseRequest {
     #setUpload(options) {
         delete this.#configs.data;
         this.#configs.filePath = options.filePath;
-        this.#configs.directory = options.directory;
+        this.#configs.name = options.fileName;
+        this.#configs.formData.uploadDirectory = options.uploadDirectory;
     }
 
     #setRequestPatch() {

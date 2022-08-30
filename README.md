@@ -192,7 +192,7 @@ request.delete('users', ids).then((response) => {
 const file = e.detail.files[0];
 const directory = '/var/html/images'
 
-request.upload('users/upload',file , directory).then((response) => {
+request.upload('users/upload',{filePath:file,fileName:'img',uploadDirectory: directory}).then((response) => {
     // Dosomething
 })
 ```

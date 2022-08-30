@@ -128,10 +128,11 @@ export class Request extends BaseRequest {
      * 上传文件
      * @param url
      * @param filePath
-     * @param directory
+     * @param fileName
+     * @param uploadDirectory
      * @returns {Promise<*>}
      */
-    upload(url, filePath, directory) {
-        return this.#upload(url, {method: RequestEnum.POST, filePath, directory});
+    upload(url, {filePath,fileName, uploadDirectory}) {
+        return this.#upload(url, {method: RequestEnum.POST, filePath, fileName,uploadDirectory});
     }
 }
