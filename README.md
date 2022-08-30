@@ -1,11 +1,11 @@
-### wechat-custom-request
+### request-miniprogram
 
-> 基于 `RESTful API` 标准封装的基于微信小程序请求器
+> 基于`wx.request`二次封装的增删改查请求器
 
 ## 安装
 
 ```shell
-npm i wechat-custom-request
+npm i request-miniprogram
 ```
 
 然后选择微信开发者工具的菜单栏 `"工具"` --- `"构建npm"` 再引用就可以使用
@@ -19,7 +19,7 @@ npm i wechat-custom-request
 方法集
 
 ```js
-import {appConfig} from "wechat-custom-request"
+import {appConfig} from "request-miniprogram"
 
 // 该方法接收一个对象,用于该单例的配置初始化
 appConfig.configure({});
@@ -54,7 +54,7 @@ appConfig.getHomePage();
 `app.js`
 
 ```javascript
-import {appConfig} from "wechat-custom-request"
+import {appConfig} from "request-miniprogram"
 
 App({
     onLaunch: function () {
@@ -69,8 +69,10 @@ App({
             authPage: '/pages/auth/index', // 后端返回401时会跳转至授权页
             homePage: '/pages/home/index', // 后端返回404时跳转至首页
             header: 'Authorization', // 请求头token标志
-            storageKey: 'access_token',// 选填,本地存储token键,默认为access_token
-            tokenType: 'Bearer', // 选填,token类型如果为Bearer,请求头为:Authorization时，请求头将由 Bearer + token 报文发式发出
+            storageKey: 'access_token',// [选填],本地存储token键,默认为access_token
+            tokenType: 'Bearer', // [选填] token类型如果为Bearer,请求头为:Authorization时，请求头将由 Bearer + token 报文发式发出
+            invalidStatus: true, // [选填] 默认值为false，true则展示自定义401消息
+            customInvalidMessage: '定义你自己的401错误消息', // [选填] 自定义401错误消息,内部已定义,例子只是让你知道有这个项
         });
 
     },
@@ -94,7 +96,7 @@ App({
 ### Request方法集
 
 ```javascript
-import {request} from "wechat-custom-request";
+import {request} from "request-miniprogram";
 ```
 
 #### 获取资源
@@ -124,7 +126,7 @@ request.get('users', query).then((response) => {
 
 const uid = 22;
 
-request.show('users', uid).then((response) => {
+request.getDetails('users', uid).then((response) => {
     // DoSomething...
 })
 
@@ -141,7 +143,7 @@ const user = {
     sex: 1,
 };
 
-request.store('users', user).then((response) => {
+request.post('users', user).then((response) => {
     // DoSomething...
 })
 ```
@@ -170,14 +172,14 @@ request.update('users', user).then((response) => {
 ```javascript
 const id = 20;
 
-request.destroy('users', {id}).then((response) => {
+request.delete('users', {id}).then((response) => {
     // DoSomething...
 })
 
 // 批量删除
 const ids = [1, 2, 3, 4, 5];
 
-request.destroy('users', ids).then((response) => {
+request.delete('users', ids).then((response) => {
     // DoSomething...
 })
 ```
@@ -188,8 +190,9 @@ request.destroy('users', ids).then((response) => {
 
 ```javascript
 const file = e.detail.files[0];
+const directory = '/var/html/images'
 
-request.upload('users/upload', file.url, 'filename').then((response) => {
+request.upload('users/upload',file , directory).then((response) => {
     // Dosomething
 })
 ```

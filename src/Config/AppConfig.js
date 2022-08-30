@@ -15,15 +15,19 @@ export class AppConfig {
      * @param header
      * @param tokenType
      * @param storageKey
+     * @param customcustomInvalidMessage
+     * @param invalidStatus
      */
-    configure({api, authPage, homePage, header, tokenType, storageKey}) {
+    configure({api, authPage, homePage, header, tokenType, storageKey,invalidStatus,customInvalidMessage}) {
         this.#globalData = {
             api,
             authPage,
             homePage,
             header,
             tokenType: tokenType ?? '',
-            storageKey: storageKey ?? 'access_token'
+            storageKey: storageKey ?? 'access_token',
+            invalidStatus: invalidStatus ?? false,
+            customInvalidMessage: customInvalidMessage ?? '您的登录状态已过期，请重新登录',
         };
     }
 
@@ -91,6 +95,22 @@ export class AppConfig {
         return !wx.getStorageSync(this.getStorageKey());
     }
 
+    /**
+     * Get login invalid message.
+     * @returns {string}
+     */
+    getCustomInvalidMessage() {
+        return this.#globalData.customInvalidMessage;
+    }
+
+    /**
+     * Get invalid status.
+     * @returns {boolean}
+     */
+    getInvalidStatus() {
+        return this.#globalData.invalidStatus;
+    }
+    
     /**
      * Get AppConfig singleton instance.
      * @returns {AppConfig}

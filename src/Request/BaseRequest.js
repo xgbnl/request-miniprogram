@@ -23,7 +23,7 @@ export class BaseRequest {
         const requestUrl = `${this.#app.getApi()}${this._prefix(url)}`;
 
         if (!this.#requestInterceptor.interceptor(requestUrl)) {
-            this.abort('api域名不合法,请配置合法域名,如: http://laravel.test/api', 3000);
+            Helper.trigger('api域名不合法,请配置合法域名,如: http://laravel.test/api', 3000);
             return false;
         }
 
@@ -63,7 +63,7 @@ export class BaseRequest {
     #setUpload(options) {
         delete this.#configs.data;
         this.#configs.filePath = options.filePath;
-        this.#configs.name = options.filename;
+        this.#configs.directory = options.directory;
     }
 
     #setRequestPatch() {
@@ -77,9 +77,5 @@ export class BaseRequest {
 
     _stringify(haystack) {
         return JSON.stringify(haystack);
-    }
-
-    abort(msg, duration = 2000, icon = 'none',) {
-        Helper.abort(msg, duration, icon,)
     }
 }

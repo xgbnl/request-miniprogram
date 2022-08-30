@@ -15,21 +15,25 @@ export class ResponseInterceptor extends Interceptor {
 
         switch (code) {
             case ResponseEnum.UNAUTHORIZED:
-                Helper.abort(msg ?? '无效访问令牌');
+                Helper.trigger(
+                    this.#app.getInvalidStatus()
+                        ? this.#app.getCustomInvalidMessage()
+                        : msg,
+                );
                 this.#redirectToAuthPage();
                 break;
             case ResponseEnum.FORBIDDEN:
-                Helper.abort(msg ?? '访问被禁止');
+                Helper.trigger(msg ?? '访问被禁止');
                 break;
             case ResponseEnum.NOT_FOUND:
-                Helper.abort(msg ?? '页面不存在');
+                Helper.trigger(msg ?? '页面不存在');
                 this.#redirectToHomePage();
                 break;
             case ResponseEnum.VALIDATE:
-                Helper.abort(msg);
+                Helper.trigger(msg);
                 break;
             case ResponseEnum.ERROR:
-                Helper.abort(msg);
+                Helper.trigger(msg);
                 break;
         }
     }
@@ -41,12 +45,12 @@ export class ResponseInterceptor extends Interceptor {
     #redirectToAuthPage() {
         setTimeout(() => {
             this.#redirect(this.#app.getAuthPage())
-        }, 5000)
+        }, 3000)
     }
 
     #redirectToHomePage() {
         setTimeout(() => {
             this.#redirect(this.#app.getHomePage())
-        }, 5000)
+        }, 3000)
     }
 }

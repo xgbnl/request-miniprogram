@@ -1,7 +1,7 @@
 {
-  "name": "wechat-custom-request",
+  "name": "request-miniprogram",
   "version": "0.1.2",
-  "description": "二次开发封装的微信请求器",
+  "description": "基于wx.request二次封装的增删改查请求器",
   "main": "src/index.js",
   "miniprogram": "src",
   "devDependencies": {},
@@ -11,9 +11,9 @@
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "https://github.com/xgbnl/wechat-custom-request.git"
+    "url": "https://github.com/xgbnl/request-miniprogram.git"
   },
   "bugs": {
-    "url": "https://github.com/xgbnl/wechat-custom-request/issues"
+    "url": "https://github.com/xgbnl/request-miniprogram/issues"
   }
 }

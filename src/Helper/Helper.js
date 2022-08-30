@@ -1,6 +1,6 @@
 export class Helper {
 
-    static abort(msg,  duration = 2000,icon = 'none',) {
+    static trigger(msg, duration = 2000, icon = 'none',) {
         wx.showToast({
             title: msg,
             icon: icon,

@@ -90,7 +90,7 @@ export class Request extends BaseRequest {
      * @param {*} id
      * @returns
      */
-    show(url, id) {
+    getDetails(url, id) {
         return this.#request(url, {method: RequestEnum.POST, data: {id: id}});
     }
 
@@ -100,7 +100,7 @@ export class Request extends BaseRequest {
      * @param options
      * @returns {Promise<*>}
      */
-    store(url, options) {
+    post(url, options) {
         return this.#request(url, {method: RequestEnum.POST, data: options});
     }
 
@@ -120,18 +120,18 @@ export class Request extends BaseRequest {
      * @param options
      * @returns {Promise<*>}
      */
-    destroy(url, options) {
+    delete(url, options) {
         return this.#request(url, {method: RequestEnum.DELETE, data: options});
     }
 
     /**
      * 上传文件
      * @param url
-     * @param path
-     * @param filename
+     * @param filePath
+     * @param directory
      * @returns {Promise<*>}
      */
-    upload(url, path, filename) {
-        return this.#upload(url, {method: RequestEnum.POST, filePath: path, filename: filename});
+    upload(url, filePath, directory) {
+        return this.#upload(url, {method: RequestEnum.POST, filePath, directory});
     }
 }
