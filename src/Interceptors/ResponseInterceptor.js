@@ -5,6 +5,7 @@ import { Helper } from "../Helper/Helper";
 export class ResponseInterceptor extends Interceptor {
 
     #application = null;
+    #redirection = false;
 
     constructor(application) {
         super();
@@ -15,15 +16,17 @@ export class ResponseInterceptor extends Interceptor {
 
         switch (code) {
             case ResponseEnum.UNAUTHORIZED:
-                Helper.trigger( '您的登录状态已过期，请重新登录', 3000);
-                this.#application.redirectToAuthPage();
+                if (!this.#redirection) {
+                    this.#redirect();
+                }
                 break;
             case ResponseEnum.FORBIDDEN:
                 Helper.trigger(msg ?? '您没有访问的权限',3000);
                 break;
             case ResponseEnum.NOT_FOUND:
-                Helper.trigger(msg ?? '页面好像走丢了',3000);
-                this.#application.redirectToHomePage();
+                if (!this.#redirection) {
+                    this.#redirect(false);
+                }
                 break;
             case ResponseEnum.VALIDATE:
                 Helper.trigger(msg);
@@ -32,5 +35,17 @@ export class ResponseInterceptor extends Interceptor {
                 Helper.trigger(msg);
                 break;
         }
+    }
+
+    #redirect(authorize = true) {
+        Helper.trigger(authorize ? '您的登录状态已过期，请重新登录' : '访问的页面不存在',3000);
+        this.#redirect = true;
+        if(authorize) {
+            this.#application.redirectToAuthPage();
+            return false;
+        }
+
+        this.#application.redirectToHomePage();
+        return false;
     }
 }
