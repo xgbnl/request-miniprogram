@@ -15,7 +15,7 @@ export class ResponseInterceptor extends Interceptor {
 
         switch (code) {
             case ResponseEnum.UNAUTHORIZED:
-                Helper.trigger(msg ?? '您的登录状态已过期，请重新登录', 3000);
+                Helper.trigger( '您的登录状态已过期，请重新登录', 3000);
                 this.#application.redirectToAuthPage();
                 break;
             case ResponseEnum.FORBIDDEN:
