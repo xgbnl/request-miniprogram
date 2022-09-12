@@ -6,8 +6,8 @@ export class RESTFul extends Request {
 
     #responseInterceptor;
 
-    constructor(reqInter, resInter, app, token) {
-        super(reqInter, app, token);
+    constructor(reqInter, resInter, application, token) {
+        super(reqInter, application, token);
 
         this.#responseInterceptor = resInter;
     }

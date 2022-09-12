@@ -2,14 +2,14 @@ import {Helper} from "../Helper/Helper";
 import {RequestEnum} from "../Enum/RequestEnum";
 
 export class Request {
-    #app;
+    #application;
     #headers;
     #configs;
     #requestInterceptor;
     #token;
 
-    constructor(reqInter, app,token) {
-        this.#app = app;
+    constructor(reqInter, application,token) {
+        this.#application = application;
         this.#token = token;
 
         this.#headers = {
@@ -22,7 +22,7 @@ export class Request {
 
     configure(url, options, upload = false) {
 
-        const requestUrl = `${this.#app.getApi()}${this._prefix(url)}`;
+        const requestUrl = `${this.#application.getHost()}${this._prefix(url)}`;
 
         if (!this.#requestInterceptor.interceptor(requestUrl)) {
             Helper.trigger('请配置请求域名', 3000);
@@ -38,8 +38,8 @@ export class Request {
             },
         };
 
-        if (this.#app.getStorageToken()) {
-            this.#bearerAuthorization();
+        if (this.#token.isNotEmpty()) {
+            this.#configs.header['Authorization'] = this.#token.getToken();
         }
 
         // 解决微信不支持PATCH请求
@@ -52,10 +52,6 @@ export class Request {
         }
 
         return this.#configs;
-    }
-
-    #bearerAuthorization() {
-            this.#configs.header['Authorization'] = this.#token.getToken();
     }
 
     #setUpload(options) {

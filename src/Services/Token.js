@@ -1,10 +1,14 @@
 export class Token {
-    #key = null;
+    #application= null
+
+    constructor(application) {
+        this.#application= application;
+    }
 
     /**
      * 设置令牌和过期时间
-     * @param {*} token 
-     * @param {*} expiration 
+     * @param {*} token
+     * @param {*} expiration
      */
     setToken(token, expiration) {
         const bearer = JSON.stringify({
@@ -13,7 +17,7 @@ export class Token {
             effectiveDate: Date.now(),
         });
 
-        wx.setStorageSync(this.#app.getTokenKey(), bearer);
+        wx.setStorageSync(this.#application.getTokenKey(), bearer);
     }
 
     /**
@@ -27,12 +31,12 @@ export class Token {
      * 移除token
      */
     removeToken() {
-        wx.removeStorageSync(this.#app.getTokenKey());
+        wx.removeStorageSync(this.#application.getTokenKey());
     }
 
     /**
      * 令牌为空
-     * @returns 
+     * @returns
      */
     isEmpty() {
         return !this.isNotEmpty();
@@ -40,17 +44,17 @@ export class Token {
 
     /**
      * 令牌不为空
-     * @returns 
+     * @returns
      */
     isNotEmpty() {
-        return wx.getStorageSync(this.#app.getTokenKey());
+        return wx.getStorageSync(this.#application.getTokenKey());
     }
 
     /**
      * 验证令牌是否有效
      */
     validateTokenValid() {
-        const { expiration, effectiveDate } = this.#resolve();
+        const {expiration, effectiveDate} = this.#resolve();
 
         const days = this.#formatExpirationToDays(expiration);
 
@@ -65,8 +69,8 @@ export class Token {
 
     /**
      * 将秒数转换为天数
-     * @param {*} expiration 
-     * @returns 
+     * @param {*} expiration
+     * @returns
      */
     #formatExpirationToDays(expiration) {
         return Math.floor(expiration / (60 * 60 * 24));
@@ -74,9 +78,9 @@ export class Token {
 
     /**
      * 解析令牌
-     * @returns 
+     * @returns
      */
     #resolve() {
-        return JSON.parse(wx.getStorageSync(this.#app.getTokenKey()));
+        return JSON.parse(wx.getStorageSync(this.#application.getTokenKey()));
     }
 }

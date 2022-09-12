@@ -1,4 +1,4 @@
-export class AppConfig {
+export class Application {
 
     static #instance = null;
 
@@ -57,7 +57,7 @@ export class AppConfig {
 
     static getInstance() {
         if (!this.#instance) {
-            this.#instance = new AppConfig();
+            this.#instance = new Application();
         }
 
         return this.#instance;

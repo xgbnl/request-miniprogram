@@ -12,29 +12,29 @@ npm i request-miniprogram
 
 ## 简单使用
 
-### AppConfig
+### Application
 
-全局配置不再由小程序app实例提供，将由`AppConfig`这个单例类来为请求器提供所需配置，下面展示它有哪些实例方法：
+全局配置不再由小程序app实例提供，将由`Application`这个单例类来为请求器提供所需配置，下面展示它有哪些实例方法：
 
 方法集
 
 ```js
-import {AppConfig} from "request-miniprogram"
+import {Application} from "request-miniprogram"
 
 // 该方法接收一个对象,用于该单例的配置初始化
-appConfig.configure({});
+Application.configure({});
 
 // 获取存储在本地的令牌名称
-appConfig.getTokenKey();
+Application.getTokenKey();
 
 // 获取请求api地址
-appConfig.getHost();
+Application.getHost();
 
 // 获取授权页面
-appConfig.getAuthPage();
+Application.getAuthPage();
 
 // 获取首页
-appConfig.getHomePage();
+Application.getHomePage();
 ```
 
 ### 配置
@@ -42,7 +42,7 @@ appConfig.getHomePage();
 `app.js`
 
 ```javascript
-import {AppConfig} from "request-miniprogram"
+import {Application} from "request-miniprogram"
 
 App({
     onLaunch: function () {
@@ -52,7 +52,7 @@ App({
     // 不再依赖app的globalData
     initAppConfig() {
 
-        AppConfig.configure({
+        Application.configure({
             api: 'http://laravel.test/api', // 全局请求api
             authPage: '/pages/auth/index', // 后端返回401时会跳转至授权页
             homePage: '/pages/home/index', // 后端返回404时跳转至首页
@@ -100,7 +100,6 @@ auth().then((response) => {
 
 
 ```
-
 
 ### 拦截器
 

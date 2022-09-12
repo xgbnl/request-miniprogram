@@ -4,11 +4,11 @@ import { Helper } from "../Helper/Helper";
 
 export class ResponseInterceptor extends Interceptor {
 
-    #app
+    #application = null;
 
-    constructor(app) {
+    constructor(application) {
         super();
-        this.#app = app;
+        this.#application = application;
     }
 
     interceptor({ code, msg }) {
@@ -19,10 +19,10 @@ export class ResponseInterceptor extends Interceptor {
                 this.#redirectToAuthPage();
                 break;
             case ResponseEnum.FORBIDDEN:
-                Helper.trigger(msg ?? '访问被禁止');
+                Helper.trigger(msg ?? '您没有访问的权限',3000);
                 break;
             case ResponseEnum.NOT_FOUND:
-                Helper.trigger(msg ?? '页面不存在');
+                Helper.trigger(msg ?? '页面好像走丢了',3000);
                 this.#redirectToHomePage();
                 break;
             case ResponseEnum.VALIDATE:
@@ -40,13 +40,13 @@ export class ResponseInterceptor extends Interceptor {
 
     #redirectToAuthPage() {
         setTimeout(() => {
-            this.#redirect(this.#app.getAuthPage())
+            this.#redirect(this.#application.getAuthPage())
         }, 3000)
     }
 
     #redirectToHomePage() {
         setTimeout(() => {
-            this.#redirect(this.#app.getHomePage())
+            this.#redirect(this.#application.getHomePage())
         }, 3000)
     }
 }
