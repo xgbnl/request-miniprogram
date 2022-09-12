@@ -1,8 +1,8 @@
 export class Token {
-    #application= null
+    #application = null
 
     constructor(application) {
-        this.#application= application;
+        this.#application = application;
     }
 
     /**
@@ -82,7 +82,8 @@ export class Token {
      */
     #resolve() {
         if (this.isEmpty()) {
-           this.#application.redirectToAuthPage()
+            this.#application.redirectToAuthPage();
+            return false;
         }
 
         return JSON.parse(wx.getStorageSync(this.#application.getTokenKey()));
