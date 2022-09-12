@@ -1,14 +1,8 @@
-import {Request} from "../Request/Request.js";
-import {InterceptorFactory} from "./InterceptorFactory";
-import {AppConfig} from "../Config/AppConfig";
+import { RESTFul } from "../Request/RESTFul.js";
 
 export class HttpFactory {
 
-    static getRequest() {
-        return new Request(
-            InterceptorFactory.getRequestInterceptor(),
-            InterceptorFactory.getResponseInterceptor(AppConfig.getInstance()),
-            AppConfig.getInstance(),
-        );
+    static getRestful(reqInter, respInter, appConfig, token) {
+        return new RESTFul(reqInter, respInter, appConfig, token);
     }
 }

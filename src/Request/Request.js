@@ -1,138 +1,80 @@
-import {BaseRequest} from "./BaseRequest.js";
-import {ResponseEnum} from "../Enum/ResponseEnum";
+import {Helper} from "../Helper/Helper";
 import {RequestEnum} from "../Enum/RequestEnum";
 
-export class Request extends BaseRequest {
+export class Request {
+    #app;
+    #headers;
+    #configs;
+    #requestInterceptor;
+    #token;
 
-    #responseInterceptor;
+    constructor(reqInter, app,token) {
+        this.#app = app;
+        this.#token = token;
 
-    constructor(reqInter, resInter, app) {
-        super(reqInter, app);
+        this.#headers = {
+            json: 'application/json; charset=UTF-8',
+            form: 'multipart/form-data',
+        };
 
-        this.#responseInterceptor = resInter;
+        this.#requestInterceptor = reqInter;
     }
 
-    #request(url, options, upload = false) {
+    configure(url, options, upload = false) {
 
-        const that = this;
+        const requestUrl = `${this.#app.getApi()}${this._prefix(url)}`;
 
-        return new Promise((resolve, reject) => {
-            try {
-                wx.request({
-                    ...that.configure(url, options, upload),
-                    success(response) {
-                        that.#triggerInterceptor(response, resolve);
-                    },
-                    fail(error) {
-                        reject(error)
-                    }
-                })
-
-            } catch (e) {
-                reject(e)
-            }
-        })
-    }
-
-    #upload(url, options) {
-
-        const that = this;
-
-        return new Promise((resolve, reject) => {
-            try {
-                wx.uploadFile({
-                    ...that.configure(url, options, true),
-                    success(response) {
-                        that.#triggerInterceptor(response, resolve)
-                    },
-                    fail(error) {
-                        reject(error)
-                    }
-                })
-            } catch (e) {
-                reject(e)
-            }
-        })
-    }
-
-    #triggerInterceptor(response, resolve) {
-
-        let jsonData = response.data;
-
-        if (typeof jsonData === "string") {
-            jsonData = JSON.parse(jsonData);
-        }
-
-        const {code, msg} = jsonData;
-        if (ResponseEnum.success(code)) {
-            resolve(jsonData);
-        }
-
-        if (ResponseEnum.ERRORS.includes(code)) {
-            this.#responseInterceptor.interceptor({code, msg});
+        if (!this.#requestInterceptor.interceptor(requestUrl)) {
+            Helper.trigger('请配置请求域名', 3000);
             return false;
         }
+
+        this.#configs = {
+            url: requestUrl,
+            method: options.method,
+            data: options.method === RequestEnum.GET ? options.data : this._stringify(options.data),
+            header: {
+                'Content-Type': upload ? this.#headers.form : this.#headers.json,
+            },
+        };
+
+        if (this.#app.getStorageToken()) {
+            this.#bearerAuthorization();
+        }
+
+        // 解决微信不支持PATCH请求
+        if (options.method === RequestEnum.PATCH) {
+            this.#setRequestPatch();
+        }
+
+        if (upload) {
+            this.#setUpload(options);
+        }
+
+        return this.#configs;
     }
 
-    /**
-     * 获取或查询数据
-     * @param url
-     * @param options
-     * @returns {Promise<*>}
-     */
-    get(url, options = {}) {
-        return this.#request(url, {method: RequestEnum.GET, data: options});
+    #bearerAuthorization() {
+            this.#configs.header['Authorization'] = this.#token.getToken();
     }
 
-    /**
-     * 获取详情
-     * @param {*} url
-     * @param {*} id
-     * @returns
-     */
-    getDetails(url, id) {
-        return this.#request(url, {method: RequestEnum.POST, data: {id: id}});
+    #setUpload(options) {
+        delete this.#configs.data;
+        this.#configs.filePath = options.filePath;
+        this.#configs.name = options.fileName;
+        this.#configs.formData.uploadDirectory = options.uploadDirectory;
     }
 
-    /**
-     * 创建数据
-     * @param url
-     * @param options
-     * @returns {Promise<*>}
-     */
-    post(url, options) {
-        return this.#request(url, {method: RequestEnum.POST, data: options});
+    #setRequestPatch() {
+        this.#configs.method = RequestEnum.POST;
+        this.#configs.header['X-HTTP-Method-Override'] = RequestEnum.PATCH;
     }
 
-    /**
-     * 更新数据
-     * @param url
-     * @param options
-     * @returns {Promise<*>}
-     */
-    update(url, options) {
-        return this.#request(url, {method: RequestEnum.PATCH, data: options});
+    _prefix(haystack, prefix = '/') {
+        return haystack.startsWith(prefix) ? haystack : `${prefix}${haystack}`;
     }
 
-    /**
-     * 删除数据
-     * @param url
-     * @param options
-     * @returns {Promise<*>}
-     */
-    delete(url, options) {
-        return this.#request(url, {method: RequestEnum.DELETE, data: options});
-    }
-
-    /**
-     * 上传文件
-     * @param url
-     * @param filePath
-     * @param fileName
-     * @param uploadDirectory
-     * @returns {Promise<*>}
-     */
-    upload(url, {filePath,fileName, uploadDirectory}) {
-        return this.#upload(url, {method: RequestEnum.POST, filePath, fileName,uploadDirectory});
+    _stringify(haystack) {
+        return JSON.stringify(haystack);
     }
 }

@@ -1,6 +1,6 @@
-import {Interceptor} from "./Interceptor";
-import {ResponseEnum} from "../Enum/ResponseEnum";
-import {Helper} from "../Helper/Helper";
+import { Interceptor } from "./Interceptor";
+import { ResponseEnum } from "../Enum/ResponseEnum";
+import { Helper } from "../Helper/Helper";
 
 export class ResponseInterceptor extends Interceptor {
 
@@ -11,15 +11,11 @@ export class ResponseInterceptor extends Interceptor {
         this.#app = app;
     }
 
-    interceptor({code, msg}) {
+    interceptor({ code, msg }) {
 
         switch (code) {
             case ResponseEnum.UNAUTHORIZED:
-                Helper.trigger(
-                    this.#app.getInvalidStatus()
-                        ? this.#app.getCustomInvalidMessage()
-                        : msg,
-                );
+                Helper.trigger(msg ?? '您的登录状态已过期，请重新登录', 3000);
                 this.#redirectToAuthPage();
                 break;
             case ResponseEnum.FORBIDDEN:
@@ -39,7 +35,7 @@ export class ResponseInterceptor extends Interceptor {
     }
 
     #redirect(url) {
-        wx.redirectTo({url: url,});
+        wx.redirectTo({ url: url, });
     }
 
     #redirectToAuthPage() {
