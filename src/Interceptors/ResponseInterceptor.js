@@ -16,14 +16,14 @@ export class ResponseInterceptor extends Interceptor {
         switch (code) {
             case ResponseEnum.UNAUTHORIZED:
                 Helper.trigger(msg ?? '您的登录状态已过期，请重新登录', 3000);
-                this.#redirectToAuthPage();
+                this.#application.redirectToAuthPage();
                 break;
             case ResponseEnum.FORBIDDEN:
                 Helper.trigger(msg ?? '您没有访问的权限',3000);
                 break;
             case ResponseEnum.NOT_FOUND:
                 Helper.trigger(msg ?? '页面好像走丢了',3000);
-                this.#redirectToHomePage();
+                this.#application.redirectToHomePage();
                 break;
             case ResponseEnum.VALIDATE:
                 Helper.trigger(msg);
@@ -32,21 +32,5 @@ export class ResponseInterceptor extends Interceptor {
                 Helper.trigger(msg);
                 break;
         }
-    }
-
-    #redirect(url) {
-        wx.redirectTo({ url: url, });
-    }
-
-    #redirectToAuthPage() {
-        setTimeout(() => {
-            this.#redirect(this.#application.getAuthPage())
-        }, 3000)
-    }
-
-    #redirectToHomePage() {
-        setTimeout(() => {
-            this.#redirect(this.#application.getHomePage())
-        }, 3000)
     }
 }

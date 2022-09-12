@@ -53,7 +53,7 @@ App({
     initAppConfig() {
 
         Application.configure({
-            api: 'http://laravel.test/api', // 全局请求api
+            host: 'http://laravel.test/api', // 全局请求api
             authPage: '/pages/auth/index', // 后端返回401时会跳转至授权页
             homePage: '/pages/home/index', // 后端返回404时跳转至首页
             tokenKey: 'bearer',// [选填],本地存储token键,将会以json格式存储

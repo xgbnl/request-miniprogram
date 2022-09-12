@@ -81,6 +81,10 @@ export class Token {
      * @returns
      */
     #resolve() {
+        if (this.isEmpty()) {
+           this.#application.redirectToAuthPage()
+        }
+
         return JSON.parse(wx.getStorageSync(this.#application.getTokenKey()));
     }
 }

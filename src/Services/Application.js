@@ -55,6 +55,32 @@ export class Application {
         return this.#globalData.tokenKey;
     }
 
+    /**
+     * 跳转
+     * @param url
+     */
+    #redirect(url) {
+        wx.redirectTo({ url: url, });
+    }
+
+    /**
+     * 跳转至授权页
+     */
+    redirectToAuthPage() {
+        setTimeout(() => {
+            this.#redirect(this.getAuthPage())
+        }, 3000)
+    }
+
+    /**
+     * 跳转至首页
+     */
+    redirectToHomePage() {
+        setTimeout(() => {
+            this.#redirect(this.getHomePage())
+        }, 3000)
+    }
+
     static getInstance() {
         if (!this.#instance) {
             this.#instance = new Application();
