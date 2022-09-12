@@ -19,28 +19,16 @@ npm i request-miniprogram
 方法集
 
 ```js
-import {appConfig} from "request-miniprogram"
+import {AppConfig} from "request-miniprogram"
 
 // 该方法接收一个对象,用于该单例的配置初始化
 appConfig.configure({});
 
-// 获取token类型
-appConfig.getTokenType();
-
-// 获取存储在本地的token
-appConfig.getStorageToken();
-
-// 检查token是否为空
-appConfig.tokenIsEmpty();
-
-// 获取请求头名称
-appConfig.getHeader();
-
 // 获取存储在本地的令牌名称
-appConfig.getStorageKey();
+appConfig.getTokenKey();
 
 // 获取请求api地址
-appConfig.getApi();
+appConfig.getHost();
 
 // 获取授权页面
 appConfig.getAuthPage();
@@ -54,7 +42,7 @@ appConfig.getHomePage();
 `app.js`
 
 ```javascript
-import {appConfig} from "request-miniprogram"
+import {AppConfig} from "request-miniprogram"
 
 App({
     onLaunch: function () {
@@ -64,20 +52,55 @@ App({
     // 不再依赖app的globalData
     initAppConfig() {
 
-        appConfig.configure({
+        AppConfig.configure({
             api: 'http://laravel.test/api', // 全局请求api
             authPage: '/pages/auth/index', // 后端返回401时会跳转至授权页
             homePage: '/pages/home/index', // 后端返回404时跳转至首页
-            header: 'Authorization', // 请求头token标志
-            storageKey: 'access_token',// [选填],本地存储token键,默认为access_token
-            tokenType: 'Bearer', // [选填] token类型如果为Bearer,请求头为:Authorization时，请求头将由 Bearer + token 报文发式发出
-            invalidStatus: true, // [选填] 默认值为false，true则展示自定义401消息
-            customInvalidMessage: '定义你自己的401错误消息', // [选填] 自定义401错误消息,内部已定义,例子只是让你知道有这个项
+            tokenKey: 'bearer',// [选填],本地存储token键,将会以json格式存储
         });
 
     },
 });
 ```
+
+### Token 类
+
+`Token`模块负责令牌的存储、移除，有以下方法集
+
+```js
+import {Token} from "request-miniprogram";
+
+// 存储令牌，一般放置到授权/登录方法中
+Token.setToken(token,expiration); 
+
+// 获取令牌,返回加密后的token
+Token.getToken(); 
+
+// 移除令牌
+Token.removeToken();
+
+// 检查令牌是否过期，自动删除,一般放置app.js中
+Token.validateTokenValid();
+
+// 令牌为空
+Token.isEmpty();
+
+// 令牌不为空
+Token.isNotEmpty();
+```
+
+**存储token例子**
+```javascript
+
+auth().then((response) => {
+    const {token_type,access_token,expiration} = response.data;
+
+    Token.setToken(access_token,expiration);
+});
+
+
+```
+
 
 ### 拦截器
 
@@ -96,7 +119,7 @@ App({
 ### Request方法集
 
 ```javascript
-import {request} from "request-miniprogram";
+import {RESTFul} from "request-miniprogram";
 ```
 
 #### 获取资源
@@ -106,14 +129,14 @@ import {request} from "request-miniprogram";
 > 请求方式: `GET`
 
 ```javascript
-request.get('users').then((response) => {
+RESTFul.get('users').then((response) => {
     // DoSomething...
 })
 
-// 查询
+// 查询/获取资源
 const query = {name: '张三', phone: 15689324465,};
 
-request.get('users', query).then((response) => {
+RESTFul.get('users', query).then((response) => {
     // DoSomething...
 })
 ```
@@ -126,7 +149,7 @@ request.get('users', query).then((response) => {
 
 const uid = 22;
 
-request.getDetails('users', uid).then((response) => {
+RESTFul.getDetails('users', uid).then((response) => {
     // DoSomething...
 })
 
@@ -143,7 +166,7 @@ const user = {
     sex: 1,
 };
 
-request.post('users', user).then((response) => {
+RESTFul.post('users', user).then((response) => {
     // DoSomething...
 })
 ```
@@ -160,7 +183,7 @@ const user = {
     sex: 1,
 };
 
-request.update('users', user).then((response) => {
+RESTFul.update('users', user).then((response) => {
     // DoSomething...
 })
 ```
@@ -172,14 +195,14 @@ request.update('users', user).then((response) => {
 ```javascript
 const id = 20;
 
-request.delete('users', {id}).then((response) => {
+RESTFul.delete('users', {id}).then((response) => {
     // DoSomething...
 })
 
 // 批量删除
 const ids = [1, 2, 3, 4, 5];
 
-request.delete('users', ids).then((response) => {
+RESTFul.delete('users', ids).then((response) => {
     // DoSomething...
 })
 ```
@@ -192,7 +215,7 @@ request.delete('users', ids).then((response) => {
 const file = e.detail.files[0];
 const directory = '/var/html/images'
 
-request.upload('users/upload',{filePath:file,fileName:'img',uploadDirectory: directory}).then((response) => {
+RESTFul.upload('users/upload',{filePath:file,fileName:'img',uploadDirectory: directory}).then((response) => {
     // Dosomething
 })
 ```
