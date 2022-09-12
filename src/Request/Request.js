@@ -39,7 +39,7 @@ export class Request {
         };
 
         if (this.#token.isNotEmpty()) {
-            this.#configs.header['Authorization'] = this.#token.getToken();
+            this.#configs.header['Authorization'] ='Bearer ' + this.#token.getToken();
         }
 
         // 解决微信不支持PATCH请求
