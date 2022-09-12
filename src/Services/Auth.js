@@ -1,4 +1,4 @@
-export class Token {
+export class Auth {
     #application = null
 
     constructor(application) {
@@ -62,7 +62,7 @@ export class Token {
 
         const currentTime = Date.now();
 
-        if (currentTime - effectiveDate - expirationTime) {
+        if ((currentTime - effectiveDate) > expirationTime) {
             this.removeToken();
         }
     }

@@ -1,6 +1,6 @@
 {
   "name": "request-miniprogram",
-  "version": "0.1.9",
+  "version": "0.1.10",
   "description": "基于wx.request二次封装的增删改查请求器",
   "main": "src/index.js",
   "miniprogram": "src",

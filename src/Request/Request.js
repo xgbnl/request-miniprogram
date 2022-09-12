@@ -6,11 +6,11 @@ export class Request {
     #headers;
     #configs;
     #requestInterceptor;
-    #token;
+    #auth;
 
-    constructor(reqInter, application,token) {
+    constructor(reqInter, application,auth) {
         this.#application = application;
-        this.#token = token;
+        this.#auth = auth;
 
         this.#headers = {
             json: 'application/json; charset=UTF-8',
@@ -38,8 +38,8 @@ export class Request {
             },
         };
 
-        if (this.#token.isNotEmpty()) {
-            this.#configs.header['Authorization'] ='Bearer ' + this.#token.getToken();
+        if (this.#auth.isNotEmpty()) {
+            this.#configs.header['Authorization'] ='Bearer ' + this.#auth.getToken();
         }
 
         // 解决微信不支持PATCH请求

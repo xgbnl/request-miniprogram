@@ -1,23 +1,23 @@
 import {HttpFactory} from "./Factories/HttpFactory";
 import {Application} from "./Services/Application";
 import {Helper} from "./Helper/Helper";
-import {Token} from './Services/Token';
+import {Auth} from './Services/Auth';
 import {InterceptorFactory} from "./Factories/InterceptorFactory";
 
 const application = Application.getInstance();
 
-const token = new Token(application);
+const auth = new Auth(application);
 
 const restful = HttpFactory.getRestful(
     InterceptorFactory.getRequestInterceptor(),
     InterceptorFactory.getResponseInterceptor(application),
     application,
-    token,
+    auth,
 );
 
 export {
     Helper,
     restful as RESTFul,
-    token as Token,
+    auth as Auth,
     application as Application,
 };

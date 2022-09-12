@@ -63,30 +63,30 @@ App({
 });
 ```
 
-### Token 类
+### Auth 类
 
-`Token`模块负责令牌的存储、移除，有以下方法集
+`Auth`模块负责令牌的存储、移除，有以下方法集
 
 ```js
-import {Token} from "request-miniprogram";
+import {Auth} from "request-miniprogram";
 
 // 存储令牌，一般放置到授权/登录方法中
-Token.setToken(token,expiration); 
+Auth.setToken(token,expiration); 
 
 // 获取令牌,返回加密后的token
-Token.getToken(); 
+Auth.getToken(); 
 
 // 移除令牌
-Token.removeToken();
+Auth.removeToken();
 
 // 检查令牌是否过期，自动删除,一般放置app.js中
-Token.validateTokenValid();
+Auth.validateTokenValid();
 
 // 令牌为空
-Token.isEmpty();
+Auth.isEmpty();
 
 // 令牌不为空
-Token.isNotEmpty();
+Auth.isNotEmpty();
 ```
 
 **存储token例子**
@@ -95,7 +95,7 @@ Token.isNotEmpty();
 auth().then((response) => {
     const {token_type,access_token,expiration} = response.data;
 
-    Token.setToken(access_token,expiration);
+    Auth.setToken(access_token,expiration);
 });
 
 
