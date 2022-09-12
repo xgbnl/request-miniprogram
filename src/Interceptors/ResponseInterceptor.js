@@ -39,7 +39,9 @@ export class ResponseInterceptor extends Interceptor {
 
     #redirect(authorize = true) {
         Helper.trigger(authorize ? '您的登录状态已过期，请重新登录' : '访问的页面不存在',3000);
-        this.#redirect = true;
+
+        this.#redirection = true;
+
         if(authorize) {
             this.#application.redirectToAuthPage();
             return false;
