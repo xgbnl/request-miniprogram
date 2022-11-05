@@ -1,11 +1,14 @@
 import {Interceptor} from "./Interceptor";
 import {ResponseEnum} from "../Enum/ResponseEnum";
 import {Helper} from "../Helper/Helper";
+import {Auth} from "../index";
 
 export class ResponseInterceptor extends Interceptor {
 
     #application = null;
-    #redirection = false;
+
+    // 触发器,避免跳转重复触发
+    #trigger = false;
 
     constructor(application) {
         super();
@@ -16,42 +19,48 @@ export class ResponseInterceptor extends Interceptor {
 
         switch (code) {
             case ResponseEnum.UNAUTHORIZED:
-                if (!this.#redirection) {
-                    this.#redirect();
-                }
+                this.listenerTrigger(msg, true);
                 break;
             case ResponseEnum.FORBIDDEN:
-                Helper.trigger(msg ?? '您没有访问的权限', 3000);
+                this.listenerTrigger(msg);
                 break;
             case ResponseEnum.NOT_FOUND:
-                if (!this.#redirection) {
-                    this.#redirect(false);
-                }
+                this.listenerTrigger(msg);
                 break;
             case ResponseEnum.VALIDATE:
-                Helper.trigger(msg);
+                this.listenerTrigger(msg);
                 break;
             case ResponseEnum.ERROR:
-                Helper.trigger(msg);
+                this.listenerTrigger(msg);
                 break;
         }
     }
 
-    #redirect(authorize = true) {
-        Helper.trigger(authorize ? '请登录后再尝试访问该页面' : '访问的页面不存在', 3000);
-
-        this.#redirection = true;
-
-        if (authorize) {
-            const pages = this.#application.getAuthPages();
-
-            if (pages.includes(this.#application.getCurrentPage())) {
-                this.#application.redirectToAuthPage();
-            }
+    listenerTrigger(msg, isAuth = false) {
+        if (this.#trigger) {
             return false;
         }
 
-        this.#application.redirectToHomePage();
-        return false;
+        if (!isAuth) {
+            Helper.trigger(msg, 300);
+            return this.setTrigger();
+        }
+
+        if (this.#application.getListenerPages(this.#application.getCurrentPage())) {
+
+            if (Auth.isEmpty()) {
+                this.setTrigger();
+                return this.#application.redirectToAuthPage();
+            }
+
+            this.#application.redirectToAuthPage();
+
+            return this.setTrigger();
+        }
+
+    }
+
+    setTrigger() {
+      return this.#trigger = true;
     }
 }

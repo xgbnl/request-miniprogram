@@ -12,23 +12,21 @@ export class Application {
     /**
      * Init singleton setting.
      * @param host
-     * @param authPage
-     * @param homePage
-     * @param tokenKey
-     * @param authPages
+     * @param authPage 授权页
+     * @param listenerPages 监听页面
      */
-    configure({host, authPage, homePage, authPages = []}) {
+    configure({host, authPage, listenerPages = []}) {
         this.#globalData = {
             host,
             authPage,
-            homePage,
-            authPages,
+            listenerPages,
         };
     }
 
     /**
      * 设置当前页面
      * @param pages
+     * @returns {string}
      */
     setCurrentPage(pages = []) {
         if (pages.length === 0) {
@@ -69,19 +67,11 @@ export class Application {
     }
 
     /**
-     * 获取首页
+     * 获取监听的页面
      * @returns {*}
      */
-    getHomePage() {
-        return this.#globalData.homePage;
-    }
-
-    /**
-     * 获取需要验证的页面
-     * @returns {*[]}
-     */
-    getAuthPages() {
-        return this.#globalData.authPages;
+    getListenerPages() {
+        return this.#globalData.listenerPages;
     }
 
     /**
@@ -98,15 +88,6 @@ export class Application {
     redirectToAuthPage() {
         setTimeout(() => {
             this.#redirect(this.getAuthPage())
-        }, 3000)
-    }
-
-    /**
-     * 跳转至首页
-     */
-    redirectToHomePage() {
-        setTimeout(() => {
-            this.#redirect(this.getHomePage())
         }, 3000)
     }
 

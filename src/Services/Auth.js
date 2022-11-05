@@ -25,7 +25,7 @@ export class Auth {
      * 获取令牌
      */
     getToken() {
-        return this.#resolve().token;
+        return this.#resolveStorageToken().token;
     }
 
     /**
@@ -55,7 +55,7 @@ export class Auth {
      * 验证令牌是否有效
      */
     validateTokenValid() {
-        const {expiration, effectiveDate} = this.#resolve();
+        const {expiration, effectiveDate} = this.#resolveStorageToken();
 
         const days = this.#formatExpirationToDays(expiration);
 
@@ -69,16 +69,6 @@ export class Auth {
     }
 
     /**
-     * 验证
-     * 如果本地没有存储Token，则跳转至验证页
-     */
-    auth(){
-        if (this.isEmpty()) {
-            this.#application.redirectToAuthPage();
-        }
-    }
-
-    /**
      * 将秒数转换为天数
      * @param {*} expiration
      * @returns
@@ -88,15 +78,10 @@ export class Auth {
     }
 
     /**
-     * 解析令牌
+     * 解析本地存储的令牌
      * @returns
      */
-    #resolve() {
-        if (this.isEmpty()) {
-            this.#application.redirectToAuthPage();
-            return false;
-        }
-
+    #resolveStorageToken() {
         return JSON.parse(wx.getStorageSync(this.#tokenKey));
     }
 }

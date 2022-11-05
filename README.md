@@ -30,9 +30,6 @@ Application.getHost();
 // 获取授权页面
 Application.getAuthPage();
 
-// 获取首页
-Application.getHomePage();
-
 // 获取当前页面
 Application.setCurrentPage(getCurrentPages())
 ```
