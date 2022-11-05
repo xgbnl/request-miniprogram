@@ -1,6 +1,6 @@
-import { Interceptor } from "./Interceptor";
-import { ResponseEnum } from "../Enum/ResponseEnum";
-import { Helper } from "../Helper/Helper";
+import {Interceptor} from "./Interceptor";
+import {ResponseEnum} from "../Enum/ResponseEnum";
+import {Helper} from "../Helper/Helper";
 
 export class ResponseInterceptor extends Interceptor {
 
@@ -12,7 +12,7 @@ export class ResponseInterceptor extends Interceptor {
         this.#application = application;
     }
 
-    interceptor({ code, msg }) {
+    interceptor({code, msg}) {
 
         switch (code) {
             case ResponseEnum.UNAUTHORIZED:
@@ -21,7 +21,7 @@ export class ResponseInterceptor extends Interceptor {
                 }
                 break;
             case ResponseEnum.FORBIDDEN:
-                Helper.trigger(msg ?? '您没有访问的权限',3000);
+                Helper.trigger(msg ?? '您没有访问的权限', 3000);
                 break;
             case ResponseEnum.NOT_FOUND:
                 if (!this.#redirection) {
@@ -38,12 +38,16 @@ export class ResponseInterceptor extends Interceptor {
     }
 
     #redirect(authorize = true) {
-        Helper.trigger(authorize ? '您的登录状态已过期，请重新登录' : '访问的页面不存在',3000);
+        Helper.trigger(authorize ? '请登录后再尝试访问该页面' : '访问的页面不存在', 3000);
 
         this.#redirection = true;
 
-        if(authorize) {
-            this.#application.redirectToAuthPage();
+        if (authorize) {
+            const pages = this.#application.getAuthPages();
+
+            if (pages.includes(this.#application.getCurrentPage())) {
+                this.#application.redirectToAuthPage();
+            }
             return false;
         }
 

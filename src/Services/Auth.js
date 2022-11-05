@@ -1,6 +1,7 @@
 export class Auth {
-    #application = null
-
+    #application = null;
+    #tokenKey = 'Bearer';
+   
     constructor(application) {
         this.#application = application;
     }
@@ -17,7 +18,7 @@ export class Auth {
             effectiveDate: Date.now(),
         });
 
-        wx.setStorageSync(this.#application.getTokenKey(), bearer);
+        wx.setStorageSync(this.#tokenKey, bearer);
     }
 
     /**
@@ -31,7 +32,7 @@ export class Auth {
      * 移除token
      */
     removeToken() {
-        wx.removeStorageSync(this.#application.getTokenKey());
+        wx.removeStorageSync(this.#tokenKey);
     }
 
     /**
@@ -47,7 +48,7 @@ export class Auth {
      * @returns
      */
     isNotEmpty() {
-        return wx.getStorageSync(this.#application.getTokenKey());
+        return wx.getStorageSync(this.#tokenKey);
     }
 
     /**
@@ -64,6 +65,16 @@ export class Auth {
 
         if ((currentTime - effectiveDate) > expirationTime) {
             this.removeToken();
+        }
+    }
+
+    /**
+     * 验证
+     * 如果本地没有存储Token，则跳转至验证页
+     */
+    auth(){
+        if (this.isEmpty()) {
+            this.#application.redirectToAuthPage();
         }
     }
 
@@ -86,6 +97,6 @@ export class Auth {
             return false;
         }
 
-        return JSON.parse(wx.getStorageSync(this.#application.getTokenKey()));
+        return JSON.parse(wx.getStorageSync(this.#tokenKey));
     }
 }

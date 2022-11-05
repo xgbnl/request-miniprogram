@@ -2,6 +2,8 @@ export class Application {
 
     static #instance = null;
 
+    #currentPage = '';
+
     #globalData = {};
 
     constructor() {
@@ -13,14 +15,41 @@ export class Application {
      * @param authPage
      * @param homePage
      * @param tokenKey
+     * @param authPages
      */
-    configure({ host, authPage, homePage, tokenKey }) {
+    configure({host, authPage, homePage, authPages = []}) {
         this.#globalData = {
             host,
             authPage,
             homePage,
-            tokenKey: tokenKey ?? 'bearer',
+            authPages,
         };
+    }
+
+    /**
+     * 设置当前页面
+     * @param pages
+     */
+    setCurrentPage(pages = []) {
+        if (pages.length === 0) {
+            return this.#currentPage;
+        }
+
+        const page = pages.pop();
+
+        if (page === undefined || page === null) {
+            return this.#currentPage;
+        }
+
+        this.#currentPage = page.route;
+    }
+
+    /**
+     * 获取当前页面
+     * @returns {string}
+     */
+    getCurrentPage() {
+        return this.#currentPage;
     }
 
     /**
@@ -48,11 +77,11 @@ export class Application {
     }
 
     /**
-     * 获取令牌主键
-     * @returns {string}
+     * 获取需要验证的页面
+     * @returns {*[]}
      */
-    getTokenKey() {
-        return this.#globalData.tokenKey;
+    getAuthPages() {
+        return this.#globalData.authPages;
     }
 
     /**
@@ -60,7 +89,7 @@ export class Application {
      * @param url
      */
     #redirect(url) {
-        wx.redirectTo({ url: url, });
+        wx.redirectTo({url: url,});
     }
 
     /**

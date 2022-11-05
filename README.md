@@ -1,6 +1,6 @@
 ### request-miniprogram
 
-> 基于`wx.request`二次封装的增删改查请求器
+> 基于`wx.request`二次封装的请求器
 
 ## 安装
 
@@ -24,9 +24,6 @@ import {Application} from "request-miniprogram"
 // 该方法接收一个对象,用于该单例的配置初始化
 Application.configure({});
 
-// 获取存储在本地的令牌名称
-Application.getTokenKey();
-
 // 获取请求api地址
 Application.getHost();
 
@@ -35,8 +32,10 @@ Application.getAuthPage();
 
 // 获取首页
 Application.getHomePage();
-```
 
+// 获取当前页面
+Application.setCurrentPage(getCurrentPages())
+```
 ### 配置
 
 `app.js`
@@ -56,9 +55,11 @@ App({
             host: 'http://laravel.test/api', // 全局请求api
             authPage: '/pages/auth/index', // 后端返回401时会跳转至授权页
             homePage: '/pages/home/index', // 后端返回404时跳转至首页
-            tokenKey: 'bearer',// [选填],本地存储token键,将会以json格式存储
+            authPages:[ // 需要验证的页面,需配合Application.setCurrentPage
+                'pages/home/home',
+                'pages/cart/index',
+            ],
         });
-
     },
 });
 ```
@@ -87,6 +88,9 @@ Auth.isEmpty();
 
 // 令牌不为空
 Auth.isNotEmpty();
+
+// 本地验证，如果没有token则跳转至授权页
+Auth.auth();
 ```
 
 **存储token例子**
@@ -111,7 +115,7 @@ auth().then((response) => {
 
 > 当后端返回 `401,403,404,422,500`状态码时，该拦截器将被触发
 
-> 当状态码为`401`时,会跳转至授权页
+> 当状态码为`401`时,需要验证的页面将会跳转至授权页
 
 > 当状态码为`404`时,会跳转至首页
 
