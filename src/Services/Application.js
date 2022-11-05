@@ -2,52 +2,31 @@ export class Application {
 
     static #instance = null;
 
-    #currentPage = '';
-
-    #globalData = {};
+    #configured = {};
 
     constructor() {
     }
 
     /**
-     * Init singleton setting.
+     * 初始化配置
      * @param host
      * @param authPage 授权页
-     * @param listenerPages 监听页面
+     * @param redirectPage 跳转页
      */
-    configure({host, authPage, listenerPages = []}) {
-        this.#globalData = {
+    configure({host, authPage, redirectPage}) {
+        this.#configured = {
             host,
             authPage,
-            listenerPages,
+            redirectPage,
         };
     }
 
     /**
-     * 设置当前页面
-     * @param pages
+     * 获取跳转页
      * @returns {string}
      */
-    setCurrentPage(pages = []) {
-        if (pages.length === 0) {
-            return this.#currentPage;
-        }
-
-        const page = pages.pop();
-
-        if (page === undefined || page === null) {
-            return this.#currentPage;
-        }
-
-        this.#currentPage = page.route;
-    }
-
-    /**
-     * 获取当前页面
-     * @returns {string}
-     */
-    getCurrentPage() {
-        return this.#currentPage;
+    getRedirectPage() {
+        return this.#configured.redirectPage;
     }
 
     /**
@@ -55,7 +34,7 @@ export class Application {
      * @returns {string}
      */
     getHost() {
-        return this.#globalData.host;
+        return this.#configured.host;
     }
 
     /**
@@ -63,34 +42,27 @@ export class Application {
      * @returns {string}
      */
     getAuthPage() {
-        return this.#globalData.authPage;
+        return this.#configured.authPage;
     }
 
     /**
-     * 获取监听的页面
-     * @returns {*}
-     */
-    getListenerPages() {
-        return this.#globalData.listenerPages;
-    }
-
-    /**
-     * 跳转
-     * @param url
-     */
-    #redirect(url) {
-        wx.redirectTo({url: url,});
-    }
-
-    /**
-     * 跳转至授权页
+     * 重定向至授权页
      */
     redirectToAuthPage() {
-        setTimeout(() => {
-            this.#redirect(this.getAuthPage())
-        }, 3000)
+        wx.redirectTo({url: this.getAuthPage()})
     }
 
+    /**
+     * 404错误跳转至重定向页面
+     */
+    redirectToRedirectionPage() {
+        wx.redirectTo({url: this.getRedirectPage()})
+    }
+
+    /**
+     * 获取单例实例
+     * @returns {null}
+     */
     static getInstance() {
         if (!this.#instance) {
             this.#instance = new Application();

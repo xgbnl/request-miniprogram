@@ -1,7 +1,6 @@
 import {Interceptor} from "./Interceptor";
 import {ResponseEnum} from "../Enum/ResponseEnum";
 import {Helper} from "../Helper/Helper";
-import {Auth} from "../index";
 
 export class ResponseInterceptor extends Interceptor {
 
@@ -18,49 +17,31 @@ export class ResponseInterceptor extends Interceptor {
     interceptor({code, msg}) {
 
         switch (code) {
-            case ResponseEnum.UNAUTHORIZED:
-                this.listenerTrigger(msg, true);
-                break;
-            case ResponseEnum.FORBIDDEN:
-                this.listenerTrigger(msg);
+            case ResponseEnum.VALIDATE:
+                this.#redirectAction(msg, true);
                 break;
             case ResponseEnum.NOT_FOUND:
-                this.listenerTrigger(msg);
+                this.#redirectAction(msg);
                 break;
-            case ResponseEnum.VALIDATE:
-                this.listenerTrigger(msg);
-                break;
-            case ResponseEnum.ERROR:
-                this.listenerTrigger(msg);
+            default:
+                Helper.trigger(msg);
                 break;
         }
     }
 
-    listenerTrigger(msg, isAuth = false) {
+    #redirectAction(msg, isAuth = false) {
         if (this.#trigger) {
             return false;
         }
 
-        if (!isAuth) {
-            Helper.trigger(msg, 300);
-            return this.setTrigger();
-        }
+        this.#trigger = false;
 
-        if (this.#application.getListenerPages(this.#application.getCurrentPage())) {
-
-            if (Auth.isEmpty()) {
-                this.setTrigger();
-                return this.#application.redirectToAuthPage();
-            }
-
+        if (isAuth) {
             this.#application.redirectToAuthPage();
-
-            return this.setTrigger();
+            return false;
         }
 
-    }
-
-    setTrigger() {
-      return this.#trigger = true;
+        this.#application.redirectToRedirectionPage();
+        return false;
     }
 }

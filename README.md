@@ -30,9 +30,10 @@ Application.getHost();
 // 获取授权页面
 Application.getAuthPage();
 
-// 获取当前页面
-Application.setCurrentPage(getCurrentPages())
+// 重定向页面
+redirectToRedirectionPage();
 ```
+
 ### 配置
 
 `app.js`
@@ -50,12 +51,8 @@ App({
 
         Application.configure({
             host: 'http://laravel.test/api', // 全局请求api
-            authPage: '/pages/auth/index', // 后端返回401时会跳转至授权页
-            homePage: '/pages/home/index', // 后端返回404时跳转至首页
-            authPages:[ // 需要验证的页面,需配合Application.setCurrentPage
-                'pages/home/home',
-                'pages/cart/index',
-            ],
+            authPage: '/pages/auth/index', // 授权页
+            redirectPage: '/pages/home/index', // 重定向页面
         });
     },
 });
@@ -69,10 +66,10 @@ App({
 import {Auth} from "request-miniprogram";
 
 // 存储令牌，一般放置到授权/登录方法中
-Auth.setToken(token,expiration); 
+Auth.setToken(token, expiration);
 
 // 获取令牌,返回加密后的token
-Auth.getToken(); 
+Auth.getToken();
 
 // 移除令牌
 Auth.removeToken();
@@ -86,17 +83,18 @@ Auth.isEmpty();
 // 令牌不为空
 Auth.isNotEmpty();
 
-// 本地验证，如果没有token则跳转至授权页
-Auth.auth();
+// 监听器，被监听的页面如果没有获取到本地token，则会重定向至授权页
+Auth.listener();
 ```
 
 **存储token例子**
+
 ```javascript
 
 auth().then((response) => {
-    const {token_type,access_token,expiration} = response.data;
+    const {token_type, access_token, expiration} = response.data;
 
-    Auth.setToken(access_token,expiration);
+    Auth.setToken(access_token, expiration);
 });
 
 
@@ -215,7 +213,7 @@ RESTFul.delete('users', ids).then((response) => {
 const file = e.detail.files[0];
 const directory = '/var/html/images'
 
-RESTFul.upload('users/upload',{filePath:file,fileName:'img',uploadDirectory: directory}).then((response) => {
+RESTFul.upload('users/upload', {filePath: file, fileName: 'img', uploadDirectory: directory}).then((response) => {
     // Dosomething
 })
 ```

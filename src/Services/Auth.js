@@ -84,4 +84,13 @@ export class Auth {
     #resolveStorageToken() {
         return JSON.parse(wx.getStorageSync(this.#tokenKey));
     }
+
+    /**
+     * 监听页面，没有获取到token重定向至授权页
+     */
+    listener() {
+        if (this.isEmpty()) {
+            this.#application.redirectToAuthPage();
+        }
+    }
 }
