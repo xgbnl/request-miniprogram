@@ -1,70 +1,65 @@
+import {Token} from "./Token";
+import {Helper} from "../Helper/Helper";
+
 export class Auth {
     #application = null;
-    #tokenKey = 'Bearer';
-   
+
+    #TOKEN_KEY = 'Bearer';
+
     constructor(application) {
         this.#application = application;
     }
 
     /**
-     * 设置令牌和过期时间
-     * @param {*} token
-     * @param {*} expiration
+     * 登录
+     * 存储令牌和过期时间
+     * @param {*} scope
+     * @param {*} expiration 天数转为秒
      */
-    setToken(token, expiration) {
-        const bearer = JSON.stringify({
-            token,
-            expiration,
-            effectiveDate: Date.now(),
-        });
+    login(scope, expiration) {
 
-        wx.setStorageSync(this.#tokenKey, bearer);
+        const token = Token.make(scope, expiration);
+
+        wx.setStorageSync(this.#TOKEN_KEY, JSON.stringify(token));
     }
 
     /**
-     * 获取令牌
+     * 返回token值
      */
-    getToken() {
-        return this.#resolveStorageToken().token;
+    token() {
+        return this.#resolveToken().getScope();
     }
 
     /**
-     * 移除token
+     * 清除会话
      */
-    removeToken() {
-        wx.removeStorageSync(this.#tokenKey);
+    logout() {
+        wx.removeStorageSync(this.#TOKEN_KEY);
     }
 
     /**
-     * 令牌为空
-     * @returns
+     * 判断当前用户是否为访客
+     * @returns {boolean}
      */
-    isEmpty() {
-        return !this.isNotEmpty();
+    guest() {
+        return !wx.getStorageSync(this.#TOKEN_KEY);
     }
 
     /**
-     * 令牌不为空
-     * @returns
+     * 监听器
+     * 当token过期时，自动删除
      */
-    isNotEmpty() {
-        return wx.getStorageSync(this.#tokenKey);
-    }
+    listener() {
+        const token = this.#resolveToken();
 
-    /**
-     * 验证令牌是否有效
-     */
-    validateTokenValid() {
-        const {expiration, effectiveDate} = this.#resolveStorageToken();
-
-        const days = this.#formatExpirationToDays(expiration);
+        const days = this.#formatExpirationToDays(token.getExpiration());
 
         const expirationTime = days * 24 * 3600 * 1000;
 
-        const currentTime = Date.now();
+        const currentTime = Helper.timestamps();
 
-        if ((currentTime - effectiveDate) > expirationTime) {
-            this.removeToken();
+        if ((currentTime - token.getEffectiveDate()) > expirationTime) {
+            this.logout();
         }
     }
 
@@ -78,19 +73,11 @@ export class Auth {
     }
 
     /**
-     * 解析本地存储的令牌
-     * @returns
+     * 解析令牌
+     * @returns {Token}
      */
-    #resolveStorageToken() {
-        return JSON.parse(wx.getStorageSync(this.#tokenKey));
-    }
-
-    /**
-     * 监听页面，没有获取到token重定向至授权页
-     */
-    listener() {
-        if (this.isEmpty()) {
-            this.#application.redirectToAuthPage();
-        }
+    #resolveToken() {
+        const {scope, expiration, effectiveDate} = JSON.parse(wx.getStorageSync(this.#TOKEN_KEY));
+        return Token.make(scope, expiration, effectiveDate);
     }
 }

@@ -25,7 +25,7 @@ export class Request {
         const requestUrl = `${this.#application.getHost()}${this._prefix(url)}`;
 
         if (!this.#requestInterceptor.interceptor(requestUrl)) {
-            Helper.trigger('请配置请求域名', 3000);
+            Helper.message('请配置请求域名', 3000);
             return false;
         }
 
@@ -38,8 +38,8 @@ export class Request {
             },
         };
 
-        if (this.#auth.isNotEmpty()) {
-            this.#configs.header['Authorization'] ='Bearer ' + this.#auth.getToken();
+        if (!this.#auth.guest()) {
+            this.#configs.header['Authorization'] ='Bearer ' + this.#auth.token();
         }
 
         // 解决微信不支持PATCH请求

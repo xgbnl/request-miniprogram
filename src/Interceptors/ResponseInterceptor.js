@@ -24,7 +24,7 @@ export class ResponseInterceptor extends Interceptor {
                 this.#redirectAction(msg);
                 break;
             default:
-                Helper.trigger(msg);
+                Helper.message(msg);
                 break;
         }
     }
@@ -36,12 +36,14 @@ export class ResponseInterceptor extends Interceptor {
 
         this.#trigger = false;
 
+        // 如果为401，则跳转至授权页
         if (isAuth) {
             this.#application.redirectToAuthPage();
             return false;
         }
 
-        this.#application.redirectToRedirectionPage();
+        // 如果返回404
+        this.#application.toRedirectionPage();
         return false;
     }
 }

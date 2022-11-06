@@ -14,10 +14,6 @@ npm i request-miniprogram
 
 ### Application
 
-全局配置不再由小程序app实例提供，将由`Application`这个单例类来为请求器提供所需配置，下面展示它有哪些实例方法：
-
-方法集
-
 ```js
 import {Application} from "request-miniprogram"
 
@@ -27,11 +23,11 @@ Application.configure({});
 // 获取请求api地址
 Application.getHost();
 
-// 获取授权页面
-Application.getAuthPage();
+// 重定向至授权页
+Application.redirectToAuthPage();
 
 // 重定向页面
-redirectToRedirectionPage();
+Application.toRedirectionPage();
 ```
 
 ### 配置
@@ -43,12 +39,7 @@ import {Application} from "request-miniprogram"
 
 App({
     onLaunch: function () {
-        this.initAppConfig();
-    },
-
-    // 不再依赖app的globalData
-    initAppConfig() {
-
+        // 应用启动时初始化配置
         Application.configure({
             host: 'http://laravel.test/api', // 全局请求api
             authPage: '/pages/auth/index', // 授权页
@@ -60,31 +51,23 @@ App({
 
 ### Auth 类
 
-`Auth`模块负责令牌的存储、移除，有以下方法集
-
 ```js
 import {Auth} from "request-miniprogram";
 
-// 存储令牌，一般放置到授权/登录方法中
-Auth.setToken(token, expiration);
+// 登录
+Auth.login(scope, expiration);
 
-// 获取令牌,返回加密后的token
-Auth.getToken();
+// 获取令牌
+Auth.token();
 
-// 移除令牌
-Auth.removeToken();
+// 清除会话
+Auth.logout();
 
-// 检查令牌是否过期，自动删除,一般放置app.js中
-Auth.validateTokenValid();
-
-// 令牌为空
-Auth.isEmpty();
-
-// 令牌不为空
-Auth.isNotEmpty();
-
-// 监听器，被监听的页面如果没有获取到本地token，则会重定向至授权页
+// 监听器,当令牌失效时，将自动删除令牌，并退出当前会话
 Auth.listener();
+
+// 判断当前用户是否为访客
+Auth.guest();
 ```
 
 **存储token例子**
@@ -94,7 +77,7 @@ Auth.listener();
 auth().then((response) => {
     const {token_type, access_token, expiration} = response.data;
 
-    Auth.setToken(access_token, expiration);
+    Auth.login(access_token, expiration);
 });
 
 

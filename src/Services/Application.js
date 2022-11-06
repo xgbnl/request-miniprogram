@@ -22,14 +22,6 @@ export class Application {
     }
 
     /**
-     * 获取跳转页
-     * @returns {string}
-     */
-    getRedirectPage() {
-        return this.#configured.redirectPage;
-    }
-
-    /**
      * 获取请求API
      * @returns {string}
      */
@@ -38,32 +30,24 @@ export class Application {
     }
 
     /**
-     * 获取授权页面
-     * @returns {string}
-     */
-    getAuthPage() {
-        return this.#configured.authPage;
-    }
-
-    /**
      * 重定向至授权页
      */
     redirectToAuthPage() {
-        wx.redirectTo({url: this.getAuthPage()})
+        wx.redirectTo({url: this.#configured.authPage})
     }
 
     /**
      * 404错误跳转至重定向页面
      */
-    redirectToRedirectionPage() {
-        wx.redirectTo({url: this.getRedirectPage()})
+   toRedirectionPage() {
+        wx.redirectTo({url: this.#configured.redirectPage})
     }
 
     /**
      * 获取单例实例
      * @returns {null}
      */
-    static getInstance() {
+    static make() {
         if (!this.#instance) {
             this.#instance = new Application();
         }

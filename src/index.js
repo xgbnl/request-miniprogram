@@ -1,23 +1,16 @@
-import {HttpFactory} from "./Factories/HttpFactory";
 import {Application} from "./Services/Application";
+import {Factory} from "./Factory/Factory";
 import {Helper} from "./Helper/Helper";
-import {Auth} from './Services/Auth';
-import {InterceptorFactory} from "./Factories/InterceptorFactory";
 
-const application = Application.getInstance();
+const app = Application.make();
 
-const auth = new Auth(application);
+const auth = Factory.makeAuth(app);
 
-const restful = HttpFactory.getRestful(
-    InterceptorFactory.getRequestInterceptor(),
-    InterceptorFactory.getResponseInterceptor(application),
-    application,
-    auth,
-);
+const restful = Factory.makeRESTFul(app, auth)
 
 export {
     Helper,
     restful as RESTFul,
     auth as Auth,
-    application as Application,
+    app as Application,
 };

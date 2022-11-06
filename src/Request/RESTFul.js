@@ -1,6 +1,6 @@
-import { Request } from "./Request.js";
-import { ResponseEnum } from "../Enum/ResponseEnum";
-import { RequestEnum } from "../Enum/RequestEnum";
+import {Request} from "./Request.js";
+import {ResponseEnum} from "../Enum/ResponseEnum";
+import {RequestEnum} from "../Enum/RequestEnum";
 
 export class RESTFul extends Request {
 
@@ -63,14 +63,11 @@ export class RESTFul extends Request {
             jsonData = JSON.parse(jsonData);
         }
 
-        const { code, msg } = jsonData;
+        const {code, msg} = jsonData;
         if (ResponseEnum.success(code)) {
             resolve(jsonData);
-        }
-
-        if (ResponseEnum.ERRORS.includes(code)) {
-            this.#responseInterceptor.interceptor({ code, msg });
-            return false;
+        } else if (ResponseEnum.ERRORS.includes(code)) {
+            this.#responseInterceptor.interceptor({code, msg})
         }
     }
 
@@ -81,7 +78,7 @@ export class RESTFul extends Request {
      * @returns {Promise<*>}
      */
     get(url, options = {}) {
-        return this.#request(url, { method: RequestEnum.GET, data: options });
+        return this.#request(url, {method: RequestEnum.GET, data: options});
     }
 
     /**
@@ -91,7 +88,7 @@ export class RESTFul extends Request {
      * @returns
      */
     getDetails(url, id) {
-        return this.#request(url, { method: RequestEnum.POST, data: { id: id } });
+        return this.#request(url, {method: RequestEnum.POST, data: {id: id}});
     }
 
     /**
@@ -101,7 +98,7 @@ export class RESTFul extends Request {
      * @returns {Promise<*>}
      */
     post(url, options) {
-        return this.#request(url, { method: RequestEnum.POST, data: options });
+        return this.#request(url, {method: RequestEnum.POST, data: options});
     }
 
     /**
@@ -111,7 +108,7 @@ export class RESTFul extends Request {
      * @returns {Promise<*>}
      */
     update(url, options) {
-        return this.#request(url, { method: RequestEnum.PATCH, data: options });
+        return this.#request(url, {method: RequestEnum.PATCH, data: options});
     }
 
     /**
@@ -121,7 +118,7 @@ export class RESTFul extends Request {
      * @returns {Promise<*>}
      */
     delete(url, options) {
-        return this.#request(url, { method: RequestEnum.DELETE, data: options });
+        return this.#request(url, {method: RequestEnum.DELETE, data: options});
     }
 
     /**
@@ -132,7 +129,7 @@ export class RESTFul extends Request {
      * @param uploadDirectory
      * @returns {Promise<*>}
      */
-    upload(url, { filePath, fileName, uploadDirectory }) {
-        return this.#upload(url, { method: RequestEnum.POST, filePath, fileName, uploadDirectory });
+    upload(url, {filePath, fileName, uploadDirectory}) {
+        return this.#upload(url, {method: RequestEnum.POST, filePath, fileName, uploadDirectory});
     }
 }
