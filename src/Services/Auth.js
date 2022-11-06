@@ -42,7 +42,15 @@ export class Auth {
      * @returns {boolean}
      */
     guest() {
-        return !wx.getStorageSync(this.#TOKEN_KEY);
+        return !this.check();
+    }
+
+    /**
+     * 判断用户是否已登录
+     * @returns 
+     */
+    check() {
+        return wx.getStorageSync(this.#TOKEN_KEY);
     }
 
     /**
