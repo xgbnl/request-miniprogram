@@ -1,10 +1,27 @@
 import {Helper} from "../Helper/Helper";
 
 export class Token {
-    #scope = null; // 令牌
-    #expiration = null; // 过期时间
-    #effectiveDate = null; // 令牌生效时间
+    /**
+     * @type string
+     */
+    #scope;
 
+    /**
+     * @type number
+     */
+    #expiration; // 过期时间
+
+    /**
+     * @type number
+     */
+    #effectiveDate; // 令牌生效时间
+
+    /**
+     * @constructor
+     * @param scope
+     * @param expiration
+     * @param effectiveDate
+     */
     constructor(scope, expiration, effectiveDate) {
         this.#scope = scope;
         this.#expiration = expiration;
@@ -15,23 +32,23 @@ export class Token {
      * 获取令牌
      * @returns {string}
      */
-    getScope = () => {
+    getScope() {
         return this.#scope;
     }
 
     /**
      * 获取过期时间
-     * @returns {string}
+     * @returns {number}
      */
-    getExpiration = () => {
+    getExpiration() {
         return this.#expiration;
     }
 
     /**
      * 获取生效时间
-     * @returns {string}
+     * @returns {number}
      */
-    getEffectiveDate = () => {
+    getEffectiveDate() {
         return this.#effectiveDate;
     }
 
@@ -42,7 +59,7 @@ export class Token {
      * @param effectiveDate
      * @returns {Token}
      */
-    static make = ({scope, expiration, effectiveDate = null}) => {
+    static make = (scope, expiration, effectiveDate = null) => {
         return new Token(scope, expiration, effectiveDate);
     }
 }

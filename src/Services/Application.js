@@ -1,7 +1,14 @@
 export class Application {
 
-    static #instance = null;
+    /**
+     *
+     * @type {Application|null}
+     */
+    static instance = null;
 
+    /**
+     * @type {{}}
+     */
     #configured = {};
 
     constructor() {
@@ -12,6 +19,7 @@ export class Application {
      * @param host
      * @param authPage 授权页
      * @param redirectPage 跳转页
+     * @return {void}
      */
     configure({host, authPage, redirectPage}) {
         this.#configured = {
@@ -31,6 +39,7 @@ export class Application {
 
     /**
      * 重定向至授权页
+     * @return {void}
      */
     redirectToAuthPage() {
         wx.redirectTo({url: this.#configured.authPage})
@@ -38,20 +47,21 @@ export class Application {
 
     /**
      * 404错误跳转至重定向页面
+     * @return {void}
      */
-   toRedirectionPage() {
+    toRedirectionPage() {
         wx.redirectTo({url: this.#configured.redirectPage})
     }
 
     /**
      * 获取单例实例
-     * @returns {null}
+     * @return {Application}
      */
     static make() {
-        if (!this.#instance) {
-            this.#instance = new Application();
+        if (!Application.instance) {
+            Application.instance = new Application();
         }
 
-        return this.#instance;
+        return Application.instance;
     }
 }

@@ -2,10 +2,16 @@ import {Token} from "./Token";
 import {Helper} from "../Helper/Helper";
 
 export class Auth {
+    /**
+     * @type {Application}
+     */
     #application = null;
 
     #TOKEN_KEY = 'Bearer';
 
+    /**
+     * @param application
+     */
     constructor(application) {
         this.#application = application;
     }
@@ -13,8 +19,9 @@ export class Auth {
     /**
      * 登录
      * 存储令牌和过期时间
-     * @param {*} scope
-     * @param {*} expiration 天数转为秒
+     * @param {string} scope
+     * @param {number} expiration 天数转为秒
+     * @return {void}
      */
     login(scope, expiration) {
 
@@ -25,6 +32,7 @@ export class Auth {
 
     /**
      * 返回token值
+     * @return {string}
      */
     token() {
         return this.#resolveToken().getScope();
@@ -32,6 +40,7 @@ export class Auth {
 
     /**
      * 清除会话
+     * @return {void}
      */
     logout() {
         wx.removeStorageSync(this.#TOKEN_KEY);
@@ -47,7 +56,7 @@ export class Auth {
 
     /**
      * 判断用户是否已登录
-     * @returns
+     * @returns {boolean|string}
      */
     check() {
         return this.#getStorageToken();
@@ -56,6 +65,7 @@ export class Auth {
     /**
      * 监听器
      * 当token过期时，自动删除
+     * @returns {void |boolean}
      */
     listener() {
         const token = this.#resolveToken();
@@ -76,9 +86,17 @@ export class Auth {
     }
 
     /**
+     * 返回一个Application实例
+     * @returns {Application}
+     */
+    getApp() {
+        return this.#application;
+    }
+
+    /**
      * 将秒数转换为天数
-     * @param {*} expiration
-     * @returns
+     * @param {number} expiration
+     * @returns {number}
      */
     #formatExpirationToDays(expiration) {
         return Math.floor(expiration / (60 * 60 * 24));
