@@ -47,10 +47,10 @@ export class Auth {
 
     /**
      * 判断用户是否已登录
-     * @returns 
+     * @returns
      */
     check() {
-        return wx.getStorageSync(this.#TOKEN_KEY);
+        return this.#getStorageToken();
     }
 
     /**
@@ -59,6 +59,10 @@ export class Auth {
      */
     listener() {
         const token = this.#resolveToken();
+
+        if (token === null) {
+            return false;
+        }
 
         const days = this.#formatExpirationToDays(token.getExpiration());
 
@@ -82,10 +86,24 @@ export class Auth {
 
     /**
      * 解析令牌
-     * @returns {Token}
+     * @returns {Token|null}
      */
     #resolveToken() {
-        const {scope, expiration, effectiveDate} = JSON.parse(wx.getStorageSync(this.#TOKEN_KEY));
+
+        if (this.guest()) {
+            return null;
+        }
+
+        const {scope, expiration, effectiveDate} = JSON.parse(this.#getStorageToken());
+
         return Token.make(scope, expiration, effectiveDate);
+    }
+
+    /**
+     * 获取令牌
+     * @returns {*}
+     */
+    #getStorageToken() {
+        return wx.getStorageSync(this.#TOKEN_KEY);
     }
 }
