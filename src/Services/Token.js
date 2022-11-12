@@ -62,4 +62,16 @@ export class Token {
     static make = (scope, expiration, effectiveDate = null) => {
         return new Token(scope, expiration, effectiveDate);
     }
+
+    /**
+     * 序列化
+     * @returns {{scope: string, expiration: number, effectiveDate: number}}
+     */
+    toJSON() {
+        return {
+            scope: this.#scope,
+            expiration: this.#expiration,
+            effectiveDate: this.#effectiveDate,
+        };
+    }
 }

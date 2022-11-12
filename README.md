@@ -68,6 +68,12 @@ Auth.listener();
 
 // 判断当前用户是否为访客
 Auth.guest();
+
+// 判断当前用户是否登录
+Auth.check();
+
+// 获取Application实例
+Auth.getApp();
 ```
 
 **存储token例子**
