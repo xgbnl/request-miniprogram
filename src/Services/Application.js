@@ -17,15 +17,17 @@ export class Application {
     /**
      * 初始化配置
      * @param host
-     * @param authPage 授权页
+     * @param authPage  授权页
      * @param redirectPage 跳转页
+     * @param globalData 全局数据
      * @return {void}
      */
-    configure({host, authPage, redirectPage}) {
+    configure({host, authPage, redirectPage,globalData = {}}) {
         this.#configured = {
             host,
             authPage,
             redirectPage,
+            globalData,
         };
     }
 
@@ -35,6 +37,15 @@ export class Application {
      */
     getHost() {
         return this.#configured.host;
+    }
+
+
+    /**
+     * 获取全局数据
+     * @returns {Object}
+     */
+    getGlobalData() {
+        return this.#configured.globalData;
     }
 
     /**

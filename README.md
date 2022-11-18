@@ -44,6 +44,7 @@ App({
             host: 'http://laravel.test/api', // 全局请求api
             authPage: '/pages/auth/index', // 授权页
             redirectPage: '/pages/home/index', // 重定向页面
+            globalData:{}, // 全局数据
         });
     },
 });
